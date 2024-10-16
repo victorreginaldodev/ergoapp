@@ -30,24 +30,31 @@ def lider_tecnico(request):
     novos_servicos = Servico.objects.filter(status='em_espera')
     qtd_novos_servicos = novos_servicos.count()
 
-    # Filtra serviços com tarefas em andamento
-    servicos_em_andamento = Servico.objects.filter(status='em_andamento')
+    servicos_em_andamento = Servico.objects.annotate(
+        total_tarefas=Count('tarefas'),  
+        tarefas_nao_concluidas=Count('tarefas', filter=~Q(tarefas__status='concluida')), 
+        tarefas_nao_iniciadas=Count('tarefas', filter=Q(tarefas__status='nao_iniciada')),
+        tarefas_em_andamento=Count('tarefas', filter=Q(tarefas__status='em_andamento')) 
+    ).filter(
+        Q(tarefas_nao_iniciadas__gt=0) | Q(tarefas_em_andamento__gt=0),  
+        total_tarefas__gt=0, 
+        tarefas_nao_concluidas=F('total_tarefas'),  
+        status='em_andamento'  
+    )
     qtd_servicos_em_andamento = servicos_em_andamento.count()
 
     # Filtra serviços concluídos
     servicos_finalizados = Servico.objects.filter(status='concluida')
     qtd_servicos_finalizados = servicos_finalizados.count()
 
-    # Filtra serviços que podem ser finalizados (onde todas as tarefas têm status 'concluída' e o serviço possui tarefas)
     servicos_para_finalizar = Servico.objects.annotate(
-        total_tarefas=Count('tarefas'),  # Conta o número total de tarefas relacionadas ao serviço
-        tarefas_concluidas=Count('tarefas', filter=Q(tarefas__status='concluida'))  # Conta o número de tarefas com status 'concluída'
+        total_tarefas=Count('tarefas'),  
+        tarefas_concluidas=Count('tarefas', filter=Q(tarefas__status='concluida'))  
     ).filter(
-        total_tarefas__gt=0,  # Garante que o serviço tenha pelo menos uma tarefa
-        total_tarefas=F('tarefas_concluidas'),  # Garante que todas as tarefas estão concluídas
-        status='em_andamento'  # Filtra apenas serviços com status 'em andamento'
+        total_tarefas__gt=0, 
+        total_tarefas=F('tarefas_concluidas'),  
+        status='em_andamento' 
     )
-
     qtd_servicos_para_finalizar = servicos_para_finalizar.count()
 
     # Lógica para formulário de atualização de serviço

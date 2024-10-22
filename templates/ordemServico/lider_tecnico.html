@@ -3,99 +3,197 @@
 {% block title %} Líder Técnica {% endblock %}
 {% block content %}
 
-<div class="content page-title mb-5">
+{% block styles %}
+<style>
+    .search-input {
+        background-color: #F4F4F4 !important;
+        padding: 10px !important;
+        padding-left: 35px !important;
+        background-image: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.svg#search') !important;
+        background-repeat: no-repeat !important;
+        background-position: 10px center !important;
+        background-size: 16px 16px !important;
+    }
 
-    <h3 class="fs-5 ms-5 mb-3">
+    .search-input::placeholder {
+        font-style: italic !important;
+    }
+</style>
+{% endblock %}
+
+<div class="container content page-title mb-5">
+
+    <h3 class="fs-5 ms-5 mb-3 mt-3">
         <i class="bi bi-person-gear" style="margin-right: 4px;"></i>
-        Página da Líder Técnica
+        Página do Líder Técnico
     </h3>
 
-    <div class="pesquisar px-5" style="display: flex; align-items: center;">
-        <form action="{% url 'financeiro' %}" method="get" style="flex: 1;">
-            <div class="input-group mb-1">
-                <input type="text" id="searchInput" name="nome_empresa" class="form-control"
-                    placeholder="Pesquise pelo nome da empresa..." value="{{ nome_empresa }}">
-                <!-- <button class="btn button" type="submit" id="searchButton">Pesquisar</button> -->
+    <div class="px-5" style="display: flex; align-items: center;">
+        <div class="card-group">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-file-earmark-plus"></i>
+                        Novos: {{ qtd_novos_servicos }}
+                    </h5>
+                    <p class="card-text">
+                        Acompanhe os serviços recém-criados que ainda não foram iniciados.
+                    </p>
+                    <button class="button px-3 py-1 mt-2 visualizar-btn" id="novos_servicos">
+                        <i class="bi bi-eye-fill"></i>
+                        Visualizar serviços
+                    </button>
+              </div>
             </div>
-        </form>
 
-        <div class="ms-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-arrow-repeat"></i>
+                        Em andamento: {{ qtd_servicos_em_andamento }}
+                    </h5>
+                    <p class="card-text">
+                        Monitore os serviços que estão em execução.
+                    </p>
+                    <button class="button px-3 py-1 mt-2 visualizar-btn" id="em_andamento">
+                        <i class="bi bi-eye-fill"></i>
+                        Visualizar serviços
+                    </button>
+                </div>
+            </div>
 
-            <button class="btn button px-3 py-1 mt-2 visualizar-btn" id="novos_servicos">
-                Novos serviços: {{ qtd_novos_servicos }}
-            </button>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-hourglass-split"></i>
+                        Para finalizar: {{ qtd_servicos_para_finalizar }}
+                    </h5>
+                    <p class="card-text">
+                        Monitore os serviços que estão em execução.
+                    </p>
+                    <button class="button px-3 py-1 mt-2 visualizar-btn" id="para_finalizar">
+                        <i class="bi bi-eye-fill"></i>
+                        Visualizar serviços
+                    </button>
+                </div>
+            </div>
 
-            <button class="btn button px-3 py-1 mt-2 visualizar-btn" id="em_andamento">
-                Em andamento: {{ qtd_servicos_em_andamento }}
-            </button>
-
-            <button class="btn button px-3 py-1 mt-2 visualizar-btn" id="para_finalizar">
-                Para finalizar: {{ qtd_servicos_para_finalizar }}
-            </button>
-
-            <button class="btn button px-3 py-1 mt-2 visualizar-btn" id="finalizados">
-                Finalizados: {{ qtd_servicos_finalizados }}
-            </button>
-
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Finalizados: {{ qtd_servicos_finalizados }}
+                    </h5>
+                    <p class="card-text">
+                        Veja os serviços que já foram concluídos com sucesso.
+                    </p>
+                    <button class="button px-3 py-1 mt-2 visualizar-btn" id="finalizados">
+                        <i class="bi bi-eye-fill"></i>
+                        Visualizar serviços
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div class="pesquisar px-5 mt-3">
+        <form action="{% url 'financeiro' %}" method="get" style="flex: 1;">
+            <div class="input-group mb-1">
+                <span class="input-group-text" id="search-icon">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input 
+                    type="text" id="searchInput" name="nome_empresa" class="form-control" 
+                    placeholder="Pesquise pelo nome da empresa ou número da ordem de serviço..." value="{{ nome_empresa }}" 
+                    style="padding: 10px; background-color: #F4F4F4;"
+                >
+            </div>
+        </form>
+    </div>
+
+    <div class="container px-5 py-2 mt-3 d-flex" style="width: 100%; font-weight: bold;">
+        <div class="d-flex justify-content-center align-items-center" style="width: 12.5%;">
+            <p style="color: var(--cinza); font-size: 14px;">OS Nº</p>
+        </div>
+        <div class="d-flex justify-content-center align-items-center" style="width: 50%;">
+            <p style="color: var(--cinza); font-size: 14px;">NOME DO CLIENTE</p>
+        </div>
+        <div class="d-flex justify-content-center align-items-center" style="width: 30%;">
+            <p style="color: var(--cinza); font-size: 14px;">SERVIÇO</p>
+        </div>
+    </div>
+    
     {% for servico in novos_servicos %}
     <div class="px-5 novos_servicos" style="display: block;">
 
         <div class="accordion mb-1" id="accordion-{{ servico.id }}">
-
             <div class="accordion-item">
-
                 <h2 class="accordion-header" id="heading-{{ servico.id }}">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse-{{ servico.id }}" aria-expanded="false"
                         aria-controls="collapse-{{ servico.id }}">
-
-                        <div class="acordeao">
-                            <div class="accordion-header-items">
-                                <p>OS Nº:</p>{{ servico.ordem_servico.id }}
+                        <div class="acordeao d-flex" style="width: 100%;">
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 2.5%;">
+                                <p style="font-size: 14px; ">{{ servico.ordem_servico.id }}</p>  
                             </div>
-                            <div class="accordion-header-items">
-                                <p>CLIENTE:</p>{{ servico.ordem_servico.cliente.nome }}
+                            <div class="accordion-header-items flex-grow-2 d-flex justify-content-center align-items-center" style="border: none; width: 50%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.ordem_servico.cliente.nome|truncatechars:45 }}</p>  
                             </div>
-                            <div class="accordion-header-items" style="border: none;">
-                                <p>SERVIÇO:</p>{{ servico.repositorio }}
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 30%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.repositorio|truncatechars:30 }}</p>                     
                             </div>
                         </div>
-
                     </button>
                 </h2>
 
                 <div id="collapse-{{ servico.id }}" class="accordion-collapse collapse"
                     aria-labelledby="heading-{{ servico.id }}" data-bs-parent="#accordion-{{ servico.id }}">
-
                     <div class="accordion-body">
-
                         <div class="accordion-infos">
-
                             <div class="row mb-4 mb-2">
-                                <div class="col-md-4">
-                                    <label class="form-label">Cliente:</label>
-                                    <p>{{ servico.ordem_servico.cliente.nome }}</p>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label class="form-label">Cliente:</label>
+                                        <p>{{ servico.ordem_servico.cliente.nome|truncatechars:80 }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Número da inscrição:</label>
+                                        <p>{{ servico.ordem_servico.cliente.numero_inscricao }}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Serviço:</label>
-                                    <p>{{ servico.repositorio }}</p>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Nome do representante:</label>
+                                        <p>{{ servico.ordem_servico.cliente.nome_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Contato:</label>
+                                        <p>{{ servico.ordem_servico.cliente.contato_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">E-mail:</label>
+                                        <p>{{ servico.ordem_servico.cliente.email_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Valor:</label>
-                                    <p> R$ {{ servico.ordem_servico.valor }}</p>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Serviço:</label>
+                                        <p>{{ servico.repositorio|truncatechars:35 }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Valor:</label>
+                                        <p> R$ {{ servico.ordem_servico.valor }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Data de recebimento:</label>
+                                        <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="row mb-4 mb-2">
-
-                                <div class="col-md-4">
-                                    <label class="form-label">Data de recebimento:</label>
-                                    <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
-                                </div>
-
+                            <div class="row mb-4 mb-2"> 
                                 <!-- Formulário de atualização de serviço -->
                                 <form method="post" class="col-md-4">
                                     {% csrf_token %}
@@ -106,17 +204,14 @@
 
                                         <div class="d-flex align-items-center">
 
-                                            <select name="status" id="id_status" class="form-select w-75">
+                                            <select name="status" id="id_status" class="form-select w-100 p-2">
                                                 <option value="nao_iniciado" {% if servico.status == 'nao_iniciado' %}selected{% endif %}>NÃO INICIADO</option>
                                                 <option value="em_andamento" {% if servico.status == 'em_andamento' %}selected{% endif %}>EM ANDAMENTO</option>
-                                                <option value="concluida" {% if servico.status == 'concluida' %}selected{% endif %}>CONCLUÍDA</option>
+                                                <!-- <option value="concluida" {% if servico.status == 'concluida' %}selected{% endif %}>CONCLUÍDA</option> -->
                                             </select>
-
-
                                             <button class="btn btn-success ms-2" type="submit" name="formUpdate">
                                                 Atualizar
                                             </button>
-
                                         </div>
                                     </div>
                                 </form>
@@ -132,7 +227,6 @@
                             <!-- Tabela de tarefas relacionadas -->
                             <div class="mb-4">
                                 <label class="form-label">Tarefas relacionadas:</label>
-
                                 <div class="d-flex align-items-center justify-content-start">
                                     <table class="table"
                                         style="border-collapse: collapse; border: 1px solid var(--cinza); border-radius: 12px; overflow: hidden;">
@@ -187,54 +281,71 @@
     {% for servico in servicos_em_andamento %}
     <div class="px-5 servicos_em_andamento" style="display: none;">
         <div class="accordion mb-1" id="accordion-{{ servico.id }}">
-
             <div class="accordion-item">
-
                 <h2 class="accordion-header" id="heading-{{ servico.id }}">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse-{{ servico.id }}" aria-expanded="false"
                         aria-controls="collapse-{{ servico.id }}">
-
-                        <div class="acordeao">
-                            <div class="accordion-header-items">
-                                <p>OS Nº:</p>{{ servico.ordem_servico.id }}
+                        <div class="acordeao d-flex" style="width: 100%;">
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 2.5%;">
+                                <p style="font-size: 14px; ">{{ servico.ordem_servico.id }}</p>  
                             </div>
-                            <div class="accordion-header-items">
-                                <p>CLIENTE:</p>{{ servico.ordem_servico.cliente.nome }}
+                            <div class="accordion-header-items flex-grow-2 d-flex justify-content-center align-items-center" style="border: none; width: 50%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.ordem_servico.cliente.nome|truncatechars:45 }}</p>  
                             </div>
-                            <div class="accordion-header-items" style="border: none;">
-                                <p>SERVIÇO:</p>{{ servico.repositorio }}
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 30%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.repositorio|truncatechars:30 }}</p>                     
                             </div>
                         </div>
                     </button>
                 </h2>
-
                 <div id="collapse-{{ servico.id }}" class="accordion-collapse collapse"
                     aria-labelledby="heading-{{ servico.id }}" data-bs-parent="#accordion-{{ servico.id }}">
 
                     <div class="accordion-body">
 
                         <div class="accordion-infos">
-
                             <div class="row mb-4 mb-2">
-                                <div class="col-md-4">
-                                    <label class="form-label">Cliente:</label>
-                                    <p>{{ servico.ordem_servico.cliente.nome }}</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Serviço:</label>
-                                    <p>{{ servico.repositorio }}</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Valor:</label>
-                                    <p> R$ {{ servico.ordem_servico.valor }}</p>
-                                </div>
-                            </div>
 
-                            <div class="row mb-4 mb-2">
-                                <div class="col-md-4">
-                                    <label class="form-label">Data de recebimento:</label>
-                                    <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label class="form-label">Cliente:</label>
+                                        <p>{{ servico.ordem_servico.cliente.nome|truncatechars:80 }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Número da inscrição:</label>
+                                        <p>{{ servico.ordem_servico.cliente.numero_inscricao }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Nome do representante:</label>
+                                        <p>{{ servico.ordem_servico.cliente.nome_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Contato:</label>
+                                        <p>{{ servico.ordem_servico.cliente.contato_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">E-mail:</label>
+                                        <p>{{ servico.ordem_servico.cliente.email_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Serviço:</label>
+                                        <p>{{ servico.repositorio|truncatechars:35 }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Valor:</label>
+                                        <p> R$ {{ servico.ordem_servico.valor }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Data de recebimento:</label>
+                                        <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -248,43 +359,46 @@
                             <!-- Tabela de tarefas relacionadas -->
                             <div class="mb-4">
                                 <label class="form-label">Tarefas relacionadas:</label>
-                                <table class="table"
-                                    style="border-collapse: collapse; border: 1px solid var(--cinza); border-radius: 12px; width: 100%; overflow: hidden;">
-                                    <thead style="background-color: var(--cinza-clarinho); border-radius: 12px;">
-                                        <tr style="border: 1px solid var(--cinza); font-size: 12px; text-transform: uppercase; text-align: left; font-weight: 700;">
-                                            <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza); width: 20%;">
-                                                Técnico
-                                            </th>
-                                            <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza); width: 40%;">
-                                                Descrição da Tarefa
-                                            </th>
-                                            <th scope="col" style="padding: 8px; width: 20%;">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for tarefa in servico.tarefas.all %}
-                                        <tr style="border-bottom: 1px solid var(--cinza);">
-                                            <td
-                                                style="padding: 8px; border-right: 1px solid var(--cinza); width: 25%; font-size: 14px;">
-                                                {{ tarefa.profile }}
-                                            </td>
-                                            <td
-                                                style="padding: 8px; font-size: 14px; border-right: 1px solid var(--cinza);">
-                                                {{ tarefa.descricao }}
-                                            </td>
-                                            <td style="padding: 8px; font-size: 14px;">
-                                                {{ tarefa.get_status_display }}
-                                            </td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="3" style="padding: 8px; text-align: center;">
-                                                Nenhuma tarefa relacionada.
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <table class="table"
+                                        style="border-collapse: collapse; border: 1px solid var(--cinza); border-radius: 12px; overflow: hidden;">
+                                        <thead style="background-color: var(--cinza-clarinho); border-radius: 12px;">
+                                            <tr
+                                                style="border: 1px solid var(--cinza); font-size: 12px; text-transform: uppercase; text-align: left; font-weight: 700;">
+                                                <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza); width: 20%;">
+                                                    Técnico
+                                                </th>
+                                                <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza); width: 40%;">
+                                                    Descrição da Tarefa
+                                                </th>
+                                                <th scope="col" style="padding: 8px; width: 20%;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tarefa in servico.tarefas.all %}
+                                            <tr style="border-bottom: 1px solid var(--cinza);">
+                                                <td
+                                                    style="padding: 8px; border-right: 1px solid var(--cinza); font-size: 14px;">
+                                                    {{ tarefa.profile }}
+                                                </td>
+                                                <td
+                                                    style="padding: 8px; font-size: 14px; border-right: 1px solid var(--cinza);">
+                                                    {{ tarefa.descricao }}
+                                                </td>
+                                                <td style="padding: 8px; font-size: 14px;">
+                                                    {{ tarefa.get_status_display }}
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" style="padding: 8px; text-align: center;">
+                                                    Nenhuma tarefa relacionada.
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -299,23 +413,20 @@
     {% for servico in servicos_para_finalizar %}
     <div class="px-5 servicos_para_finalizar" style="display: none;">
         <div class="accordion mb-1" id="accordion-{{ servico.id }}">
-
             <div class="accordion-item">
-
                 <h2 class="accordion-header" id="heading-{{ servico.id }}">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse-{{ servico.id }}" aria-expanded="false"
                         aria-controls="collapse-{{ servico.id }}">
-
-                        <div class="acordeao">
-                            <div class="accordion-header-items">
-                                <p>OS Nº:</p>{{ servico.ordem_servico.id }}
+                        <div class="acordeao d-flex" style="width: 100%;">
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 2.5%;">
+                                <p style="font-size: 14px; ">{{ servico.ordem_servico.id }}</p>  
                             </div>
-                            <div class="accordion-header-items">
-                                <p>CLIENTE:</p>{{ servico.ordem_servico.cliente.nome }}
+                            <div class="accordion-header-items flex-grow-2 d-flex justify-content-center align-items-center" style="border: none; width: 50%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.ordem_servico.cliente.nome|truncatechars:45 }}</p>  
                             </div>
-                            <div class="accordion-header-items" style="border: none;">
-                                <p>SERVIÇO:</p>{{ servico.repositorio }}
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 30%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.repositorio|truncatechars:30 }}</p>                     
                             </div>
                         </div>
                     </button>
@@ -323,57 +434,76 @@
 
                 <div id="collapse-{{ servico.id }}" class="accordion-collapse collapse"
                     aria-labelledby="heading-{{ servico.id }}" data-bs-parent="#accordion-{{ servico.id }}">
-
                     <div class="accordion-body">
-
                         <div class="accordion-infos">
-
                             <div class="row mb-4 mb-2">
-                                <div class="col-md-4">
-                                    <label class="form-label">Cliente:</label>
-                                    <p>{{ servico.ordem_servico.cliente.nome }}</p>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <label class="form-label">Cliente:</label>
+                                        <p>{{ servico.ordem_servico.cliente.nome|truncatechars:80 }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Número da inscrição:</label>
+                                        <p>{{ servico.ordem_servico.cliente.numero_inscricao }}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Serviço:</label>
-                                    <p>{{ servico.repositorio }}</p>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Nome do representante:</label>
+                                        <p>{{ servico.ordem_servico.cliente.nome_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Contato:</label>
+                                        <p>{{ servico.ordem_servico.cliente.contato_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">E-mail:</label>
+                                        <p>{{ servico.ordem_servico.cliente.email_representante|default_if_none:"Não cadastrado" }}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Valor:</label>
-                                    <p> R$ {{ servico.ordem_servico.valor }}</p>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Serviço:</label>
+                                        <p>{{ servico.repositorio|truncatechars:35 }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Valor:</label>
+                                        <p> R$ {{ servico.ordem_servico.valor }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Data de recebimento:</label>
+                                        <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="row mb-4 mb-2">
-
-                                <div class="col-md-4">
-                                    <label class="form-label">Data de recebimento:</label>
-                                    <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
-                                </div>
-
+                            <div class="row mb-4 mb-2"> 
                                 <!-- Formulário de atualização de serviço -->
-                                <form method="post" class="col-md-8 d-flex align-items-center">
+                                <form method="post" class="d-flex align-items-center">
                                     {% csrf_token %}
                                     <input type="hidden" name="servico_id" value="{{ servico.id }}">
-
+                                
                                     <!-- Campo de status -->
-                                    <div class="form-group me-2">
+                                    <div class="form-group me-2 col-md-3">
                                         <label for="{{ formUpdate.status.id_for_label }}" class="mb-2">Status:</label>
-                                        <select name="status" id="id_status" class="form-select w-100">
+                                        <select name="status" id="id_status" class="form-select w-100 p-2">
                                             <option value="nao_iniciado" {% if servico.status == 'nao_iniciado' %}selected{% endif %}>NÃO INICIADO</option>
                                             <option value="em_andamento" {% if servico.status == 'em_andamento' %}selected{% endif %}>EM ANDAMENTO</option>
                                             <option value="concluida" {% if servico.status == 'concluida' %}selected{% endif %}>CONCLUÍDA</option>
                                         </select>
-
+                                
                                     </div>
-
+                                
                                     <!-- Campo de data de conclusão -->
-                                    <div class="form-group me-2">
+                                    <div class="form-group me-2 col-md-2">
                                         <label for="{{ formUpdate.data_conclusao.id_for_label }}" class="mb-2">Data de
                                             Conclusão:</label>
                                         <input type="date" name="data_conclusao" id="id_data_conclusao"
-                                            class="form-control w-100" value="{{ servico.data_conclusao|date:" Y-m-d" }}">
+                                            class="form-control w-100 p-2" value="{{ servico.data_conclusao|date:" Y-m-d" }}">
                                     </div>
-
+                                
                                     <!-- Botão de atualização -->
                                     <div class="form-group" style="margin-top: 22px;">
                                         <button class="btn btn-success" type="submit" name="formUpdate">
@@ -393,50 +523,49 @@
                             <!-- Tabela de tarefas relacionadas -->
                             <div class="mb-4">
                                 <label class="form-label">Tarefas relacionadas:</label>
-                                <table class="table"
-                                    style="border-collapse: collapse; border: 1px solid var(--cinza); border-radius: 12px; width: 100%; overflow: hidden;">
-                                    <thead style="background-color: var(--cinza-clarinho); border-radius: 12px;">
-                                        <tr
-                                            style="border: 1px solid var(--cinza); font-size: 12px; text-transform: uppercase; text-align: left; font-weight: 700;">
-                                            <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza);">
-                                                Nome do Colaborador
-                                            </th>
-                                            <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza);">
-                                                Descrição da Tarefa
-                                            </th>
-                                            <th scope="col" style="padding: 8px; width: 15%; border-right: 1px solid var(--cinza);">Status</th>
-                                            <th scope="col" style="padding: 8px; width: 15%;">Data da conclusão</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for tarefa in servico.tarefas.all %}
-                                        <tr style="border-bottom: 1px solid var(--cinza);">
-                                            <td
-                                                style="padding: 8px; border-right: 1px solid var(--cinza); width: 25%; font-size: 14px;">
-                                                {{ tarefa.profile }}
-                                            </td>
-                                            <td
-                                                style="padding: 8px; font-size: 14px; border-right: 1px solid var(--cinza);">
-                                                {{ tarefa.descricao }}
-                                            </td>
-                                            <td style="padding: 8px; font-size: 14px; border-right: 1px solid var(--cinza);">
-                                                {{ tarefa.get_status_display }}
-                                            </td>
-                                            <td style="padding: 8px; font-size: 14px;">
-                                                {{ tarefa.data_termino|date:"d/m/Y"}}
-                                            </td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="3" style="padding: 8px; text-align: center;">
-                                                Nenhuma tarefa relacionada.
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <table class="table"
+                                        style="border-collapse: collapse; border: 1px solid var(--cinza); border-radius: 12px; overflow: hidden;">
+                                        <thead style="background-color: var(--cinza-clarinho); border-radius: 12px;">
+                                            <tr
+                                                style="border: 1px solid var(--cinza); font-size: 12px; text-transform: uppercase; text-align: left; font-weight: 700;">
+                                                <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza); width: 20%;">
+                                                    Técnico
+                                                </th>
+                                                <th scope="col" style="padding: 8px; border-right: 1px solid var(--cinza); width: 40%;">
+                                                    Descrição da Tarefa
+                                                </th>
+                                                <th scope="col" style="padding: 8px; width: 20%;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tarefa in servico.tarefas.all %}
+                                            <tr style="border-bottom: 1px solid var(--cinza);">
+                                                <td
+                                                    style="padding: 8px; border-right: 1px solid var(--cinza); font-size: 14px;">
+                                                    {{ tarefa.profile }}
+                                                </td>
+                                                <td
+                                                    style="padding: 8px; font-size: 14px; border-right: 1px solid var(--cinza);">
+                                                    {{ tarefa.descricao }}
+                                                </td>
+                                                <td style="padding: 8px; font-size: 14px;">
+                                                    {{ tarefa.get_status_display }}
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="3" style="padding: 8px; text-align: center;">
+                                                    Nenhuma tarefa relacionada.
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
+                        <a href="{% url 'tarefas' servico.id %}" class="btn button py-2" target="_blank">Nova tarefa</a>
                     </div>
                 </div>
             </div>
@@ -456,15 +585,15 @@
                         data-bs-target="#collapse-{{ servico.id }}" aria-expanded="false"
                         aria-controls="collapse-{{ servico.id }}">
 
-                        <div class="acordeao">
-                            <div class="accordion-header-items">
-                                <p>OS Nº:</p>{{ servico.ordem_servico.id }}
+                        <div class="acordeao d-flex" style="width: 100%;">
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 2.5%;">
+                                <p style="font-size: 14px; ">{{ servico.ordem_servico.id }}</p>  
                             </div>
-                            <div class="accordion-header-items">
-                                <p>CLIENTE:</p>{{ servico.ordem_servico.cliente.nome }}
+                            <div class="accordion-header-items flex-grow-2 d-flex justify-content-center align-items-center" style="border: none; width: 50%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.ordem_servico.cliente.nome|truncatechars:45 }}</p>  
                             </div>
-                            <div class="accordion-header-items" style="border: none;">
-                                <p>SERVIÇO:</p>{{ servico.repositorio }}
+                            <div class="accordion-header-items flex-grow-1 d-flex justify-content-center align-items-center" style="border: none; width: 30%;">
+                                <p style="font-size: 14px; font-weight: 400;">{{ servico.repositorio|truncatechars:30 }}</p>                     
                             </div>
                         </div>
 
@@ -478,39 +607,55 @@
 
                         <div class="accordion-infos">
 
-                            <div class="row mb-4 mb-2">
-                                <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-8">
                                     <label class="form-label">Cliente:</label>
-                                    <p>{{ servico.ordem_servico.cliente.nome }}</p>
+                                    <p>{{ servico.ordem_servico.cliente.nome|truncatechars:80 }}</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label">Serviço:</label>
-                                    <p>{{ servico.repositorio}}</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Valor:</label>
-                                    <p>R$ {{ servico.ordem_servico.valor }}</p>
+                                    <label class="form-label">Número da inscrição:</label>
+                                    <p>{{ servico.ordem_servico.cliente.numero_inscricao }}</p>
                                 </div>
                             </div>
 
-                            <div class="row mb-4 mb-2">
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Nome do representante:</label>
+                                    <p>{{ servico.ordem_servico.cliente.nome_representante|default_if_none:"Não cadastrado" }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Contato:</label>
+                                    <p>{{ servico.ordem_servico.cliente.contato_representante|default_if_none:"Não cadastrado" }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">E-mail:</label>
+                                    <p>{{ servico.ordem_servico.cliente.email_representante|default_if_none:"Não cadastrado" }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Serviço:</label>
+                                    <p>{{ servico.repositorio|truncatechars:35 }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Valor:</label>
+                                    <p> R$ {{ servico.ordem_servico.valor }}</p>
+                                </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Data de recebimento:</label>
                                     <p>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</p>
                                 </div>
+                            </div>
 
-                                <div class="col-md-4">
-                                    <label class="form-label">Data de conclusão:</label>
-                                    <p>{{ servico.data_conclusao|date:"d/m/Y" }}</p>
-                                </div>
-
+                            <div class="row mt-3">
                                 <div class="col-md-4">
                                     <label class="form-label">Status:</label>
                                     <p>{{ servico.get_status_display }}</p>
                                 </div>
                             </div>
 
-                            <div class="row mb-4">
+                            <div class="row mt-3">
                                 <div class="col-md-12">
                                     <label class="form-label">Observações:</label>
                                     <p class="accordion-observacao">{{ servico.descricao }}</p>
@@ -518,7 +663,7 @@
                             </div>
 
                             <!-- Tabela de tarefas relacionadas -->
-                            <div class="mb-4">
+                            <div class="mt-3">
                                 <label class="form-label">Tarefas relacionadas:</label>
                                 <table class="table" style="border-collapse: collapse;
                                 border: 1px solid var(--cinza);

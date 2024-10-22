@@ -69,17 +69,17 @@ body {
 
 .button {
     border: none;
-    /* background-color: var(--azul-secundario); */
     background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
     font-size: 14px;
-    padding: 0 1rem;
+    padding: 0.5rem 1rem !important;
     font-weight: 500;
     color: var(--branco);
+    border-radius: 8px;
+    box-shadow: 1px 1px 2px black;
 }
 
 .button:hover {
     border: none;
-    /* background-color: var(--azul-secundario); */
     background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
     font-size: 14px;
     padding: 0 1rem;
@@ -135,7 +135,7 @@ label {
     font-size: 14px;
     color: var(--cinza);
     font-weight: 400;
-    margin-bottom: 5px;
+    margin-left: 5px;
 }
 
 .filters {
@@ -185,9 +185,10 @@ label {
 
 .accordion-infos p {
     font-size: 14px;
-    padding: 12px;
-    border: 1px solid var(--cinza);
+    padding: 16px;
+    /* border: 1px solid var(--cinza); */
     border-radius: 10px;
+    box-shadow: 1px 1px 2px var(--cinza);
 }
 
 .accordion-observacao {

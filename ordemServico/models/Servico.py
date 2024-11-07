@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from .Repositorio import Repositorio
 from .OrdemServico import OrdemServico
 
@@ -39,3 +41,11 @@ class Servico(models.Model):
 
     def __str__(self):
         return f'Ordem de serviço: {self.ordem_servico.id} | Cliente: {self.ordem_servico.cliente.nome}'
+
+    def concluir_servico(self):
+        # Verifica se todas as tarefas associadas estão concluídas
+        if all(tarefa.status == 'concluida' for tarefa in self.tarefas.all()):
+            # Atualiza o status do serviço para 'concluída' e define a data de conclusão
+            self.status = 'concluida'
+            self.data_conclusao = timezone.now().date()
+            self.save()

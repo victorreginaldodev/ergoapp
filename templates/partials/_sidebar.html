@@ -58,7 +58,7 @@
                 <li>
                     <!-- Líder Técnico (restrito para Líderes Técnicos e acima) -->
                     <a class="dropdown-item"
-                        href="{% if request.user.profile.role != 4 and request.user.profile.role != 5 %}{% url 'dashboard_lider' %}{% endif %}"
+                        href="{% if request.user.profile.role != 4 and request.user.profile.role != 5 %}{% url 'lider_tecnico' %}{% endif %}"
                         {% if request.user.profile.role == 4 or request.user.profile.role == 5 %}
                             onclick="showTechPermissionAlert(); return false;"
                         {% endif %} style="color: #000">

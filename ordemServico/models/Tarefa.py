@@ -23,7 +23,7 @@ class Tarefa(models.Model):
         null=False,
         blank=False,
         default="",
-         related_name='tarefas'
+        related_name='tarefas'
     ) 
     profile = models.ForeignKey(
         Profile, 
@@ -54,3 +54,10 @@ class Tarefa(models.Model):
 
     def __str__(self):
         return f"Tarefa para {self.profile} em {self.servico}"
+    
+    def save(self, *args, **kwargs):
+        # Chama o save original para salvar a tarefa
+        super().save(*args, **kwargs)
+        # Verifica se a tarefa foi concluída e atualiza o serviço
+        if self.status == 'concluida':
+            self.servico.concluir_servico()

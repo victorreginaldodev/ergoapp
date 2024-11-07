@@ -3,6 +3,7 @@ from django.forms import inlineformset_factory
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, Q, F
+from django.http import JsonResponse
 
 from ordemServico.models import Servico, Tarefa, Profile
 from ordemServico.forms import ServicoUpdateForm, TarefaForm
@@ -128,3 +129,20 @@ def tarefas(request, servico_id):
 
     return render(request, 'ordemServico/tarefas.html', context)
 
+
+@user_passes_test(verificar_tipo_usuario)
+@login_required
+def dashborad_lider(request):
+    return render(request, 'ordemServico/area_tecnica/dashboard_lider.html')
+
+
+STATUS_DISPLAY = {
+    'em_espera': 'EM ESPERA',
+    'em_andamento': 'EM ANDAMENTO',
+    'concluida': 'CONCLUÍDA',
+}
+
+def servicos_por_status(request):
+    contagem = Servico.objects.values('status').order_by('status').annotate(total=Count('id'))
+    dados = {STATUS_DISPLAY[item['status']]: item['total'] for item in contagem}
+    return JsonResponse(dados)

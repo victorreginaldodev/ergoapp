@@ -2,7 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 import locale
 
-from ordemServico.models import Profile, Servico
+from django.http import JsonResponse
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth
+
+from ordemServico.models import Profile, OrdemServico, Servico
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
@@ -23,3 +27,42 @@ def painel_de_controle(request):
     }
 
     return render(request, 'ordemServico/painel_controle.html', context)
+
+
+def servicos_graficos(request):
+    # 1. Quantidade de serviços criados por mês
+    servicos_por_mes = (
+        Servico.objects.filter(ordem_servico__data_criacao__isnull=False)
+        .annotate(mes=TruncMonth('ordem_servico__data_criacao'))
+        .values('mes')
+        .annotate(total=Count('id'))
+        .order_by('mes')
+    )
+
+    # 2. Quantidade de serviços por status
+    servicos_por_status = (
+        Servico.objects.values('status')
+        .annotate(total=Count('id'))
+        .order_by('status')
+    )
+
+    # 3. Valor de vendas por mês
+    vendas_por_mes = (
+        OrdemServico.objects.filter(data_criacao__isnull=False)
+        .annotate(mes=TruncMonth('data_criacao'))
+        .values('mes')
+        .annotate(total_vendas=Sum('valor'))
+        .order_by('mes')
+    )
+
+    # Converte os dados para listas para serem enviados como JSON
+    servicos_por_mes = list(servicos_por_mes)
+    servicos_por_status = list(servicos_por_status)
+    vendas_por_mes = list(vendas_por_mes)
+
+    # Retorna os dados como JSON
+    return JsonResponse({
+        'servicos_por_mes': servicos_por_mes,
+        'servicos_por_status': servicos_por_status,
+        'vendas_por_mes': vendas_por_mes,
+    })

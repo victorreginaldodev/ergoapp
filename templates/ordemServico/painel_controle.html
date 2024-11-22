@@ -45,7 +45,24 @@
             Painel de controle
         </h3>
 
-        
+        <!-- Gráfico 1: Quantidade de serviços criados por mês -->
+        <div class="mb-4" style="width: 100%; height: 40vh; display: flex; justify-content: center; align-items: center;">
+            <canvas id="graficoServicosPorMes" style="max-width: 90%; height: 100%;"></canvas>
+        </div>
+
+        <!-- Container para os gráficos de status e vendas -->
+        <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 40vh;">
+            <!-- Gráfico 2: Quantidade de serviços por status -->
+            <div style="width: 40%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                <canvas id="graficoServicosPorStatus" style="max-width: 100%; height: 100%;"></canvas>
+            </div>
+
+            <!-- Gráfico 3: Valor de vendas por mês -->
+            <div style="width: 58%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                <canvas id="graficoVendasPorMes" style="max-width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+
 
         <div class="tabela-painel-controle p-1" style="max-height: 50vh; overflow-y: auto;">
 
@@ -276,4 +293,99 @@
         });
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Requisição para obter os dados
+    fetch('/api/servicos-graficos/')
+        .then(response => response.json())
+        .then(data => {
+            // Dados do gráfico de serviços criados por mês
+            const labelsServicosPorMes = data.servicos_por_mes.map(item => item.mes);
+            const dataServicosPorMes = data.servicos_por_mes.map(item => item.total);
+
+            const ctx1 = document.getElementById('graficoServicosPorMes').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labelsServicosPorMes,
+                    datasets: [{
+                        label: 'Serviços Criados por Mês',
+                        data: dataServicosPorMes,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Dados do gráfico de serviços por status
+            const labelsServicosPorStatus = data.servicos_por_status.map(item => item.status);
+            const dataServicosPorStatus = data.servicos_por_status.map(item => item.total);
+
+            const ctx2 = document.getElementById('graficoServicosPorStatus').getContext('2d');
+            new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: labelsServicosPorStatus,
+                    datasets: [{
+                        label: 'Serviços por Status',
+                        data: dataServicosPorStatus,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            // Dados do gráfico de vendas por mês
+            const labelsVendasPorMes = data.vendas_por_mes.map(item => item.mes);
+            const dataVendasPorMes = data.vendas_por_mes.map(item => item.total_vendas);
+
+            const ctx3 = document.getElementById('graficoVendasPorMes').getContext('2d');
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: labelsVendasPorMes,
+                    datasets: [{
+                        label: 'Valor de Vendas por Mês',
+                        data: dataVendasPorMes,
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Erro ao carregar os dados dos gráficos:', error));
+</script>
+
+
 {% endblock %}

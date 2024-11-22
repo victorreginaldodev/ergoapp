@@ -3,6 +3,35 @@
 {% block title %} Painel de controle {% endblock %}
 {% block style %}
 <style>
+    .status-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .status-concluido {
+        background-color: #a8d5ba; /* Verde pastel */
+        color: #155724; /* Verde escuro para texto */
+    }
+
+    .status-em-andamento {
+        background-color: #fff3cd; /* Amarelo pastel */
+        color: #856404; /* Amarelo escuro para texto */
+    }
+
+    .status-em-espera {
+        background-color: #f8d7da; /* Vermelho pastel */
+        color: #721c24; /* Vermelho escuro para texto */
+    }
+
+    .status-cell {
+        padding: 8px;
+        text-align: center;
+        border-radius: 4px;
+    }
+
 
 </style>
 {% endblock %}
@@ -11,215 +40,139 @@
 <div class="content page-title mb-5 px-4" style="min-height: 80vh;">
 
     <div class="container">
-        <h3 class="fs-5 mb-5">
+        <h3 class="titulo-pagina">
             <i class="bi bi-graph-up" style="margin-right: 4px;"></i>
             Painel de controle
         </h3>
 
-        <h6 style="color: #78828B; font-weight: 600;" class="mb-2">
-            Status dos faturamentos:
-        </h6>
-        <div class="card-group mb-4">
+        
 
-            <!-- Card for Para Faturar -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-exclamation-circle"></i> <!-- Representa serviços prontos para faturar -->
-                        Prontos para Faturar
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_para_faturar }}</p>
-                    <p class="card-text" style="font-weight: 500;">Valor Total: R$ {{ valor_total_para_faturar }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
+        <div class="tabela-painel-controle p-1" style="max-height: 50vh; overflow-y: auto;">
+
+            <h6 style="color: #78828B; font-weight: 400; font-size: 14px;" class="mb-2">
+                Histórico de serviços:
+            </h6>
+
+            <div style="display: flex; align-items: center; gap: 10px;" class="mb-1">
+                <!-- Campo de Pesquisa -->
+                <input type="text" id="search-input" class="form-control w-50" placeholder="Pesquisar..." style=" padding: 0.5rem; font-size: 14px; background-color: var(--cinza-claro);">
+            
+                <!-- Botões de Filtro -->
+                <button onclick="filterTable('concluída')" 
+                        style="
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 8px 16px;
+                            border-radius: 16px;
+                            border: 1px solid #28a745;
+                            background-color: #f0fdf4;
+                            color: #155724;
+                            font-size: 12px;
+                            cursor: pointer;
+                            font-weight: bold;">
+                    <span style="
+                            display: inline-block;
+                            width: 10px;
+                            height: 10px;
+                            border-radius: 50%;
+                            margin-right: 8px;
+                            background-color: #28a745;">
+                    </span>
+                    Concluído
+                </button>
+            
+                <button onclick="filterTable('em andamento')" 
+                        style="
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 8px 16px;
+                            border-radius: 16px;
+                            border: 1px solid #ffc107;
+                            background-color: #fff8e1;
+                            color: #856404;
+                            font-size: 12px;
+                            cursor: pointer;
+                            font-weight: bold;">
+                    <span style="
+                            display: inline-block;
+                            width: 10px;
+                            height: 10px;
+                            border-radius: 50%;
+                            margin-right: 8px;
+                            background-color: #ffc107;">
+                    </span>
+                    Em andamento
+                </button>
+            
+                <button onclick="filterTable('em espera')" 
+                        style="
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 8px 16px;
+                            border-radius: 16px;
+                            border: 1px solid #dc3545;
+                            background-color: #fde2e4;
+                            color: #721c24;
+                            font-size: 12px;
+                            cursor: pointer;
+                            font-weight: bold;">
+                    <span style="
+                            display: inline-block;
+                            width: 10px;
+                            height: 10px;
+                            border-radius: 50%;
+                            margin-right: 8px;
+                            background-color: #dc3545;">
+                    </span>
+                    Em espera
+                </button>
+            
+                <button onclick="filterTable('')" 
+                        style="
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 8px 16px;
+                            border-radius: 16px;
+                            border: 1px solid #6c757d;
+                            background-color: #f8f9fa;
+                            color: #6c757d;
+                            font-size: 12px;
+                            cursor: pointer;
+                            font-weight: bold;">
+                    <span style="
+                            display: inline-block;
+                            width: 10px;
+                            height: 10px;
+                            border-radius: 50%;
+                            margin-right: 8px;
+                            background-color: #6c757d;">
+                    </span>
+                    Todos
+                </button>
             </div>
-
-            <!-- Card for Futuros Faturamentos -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-clock-history"></i> <!-- Representa futuros faturamentos -->
-                        Futuros Faturamentos
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_futuros_faturamentos }}</p>
-                    <p class="card-text" style="font-weight: 500;">Valor Total: R$ {{ valor_total_futuros_faturamentos }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-
-            <!-- Card for Total de Faturadas -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-cash-stack"></i> <!-- Representa faturamento -->
-                        Ordens Faturadas
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_faturadas }}</p>
-                    <p class="card-text" style="font-weight: 500;">Valor Total: R$ {{ valor_total_faturadas }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-        </div>
-
-        <h6 style="color: #78828B; font-weight: 600;" class="mb-2">
-            Histórico de ordens de serviços dos últimos 30 dias:
-        </h6>
-
-        <div class="card-group mb-4">
-            <!-- Card for Today -->
-            <div class="card today">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-calendar-check"></i> <!-- Representa hoje com um checkmark -->
-                        Hoje
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_ordens_criadas_hoje }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">
-                        Informações atualizadas
-                    </small>
-                </div>
-            </div>
-
-            <!-- Card for Last 7 Days -->
-            <div class="card seven-days">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-clock-history"></i>
-                        <!-- Representa os últimos 7 dias com um ícone de histórico -->
-                        Últimos 7 dias
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_ordens_ultimos_7_dias }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-
-            <!-- Card for Last 15 Days -->
-            <div class="card fifteen-days">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-calendar-range"></i> <!-- Representa um intervalo de datas com um calendário -->
-                        Últimos 15 dias
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_ordens_ultimos_15_dias }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-
-            <!-- Card for Last 30 Days -->
-            <div class="card thirty-days">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-calendar-month"></i> <!-- Representa o mês com um calendário de 30 dias -->
-                        Últimos 30 dias
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ contagem_ordens_ultimos_30_dias }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-        </div>
-
-        <h6 style="color: #78828B; font-weight: 600;" class="mb-2">
-            Status dos serviços:
-        </h6>
-
-        <!-- Cards for Service Status -->
-        <div class="card-group mb-4">
-            <!-- Card for Serviços em Espera -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-pause-circle"></i> <!-- Representa serviços em espera -->
-                        Serviços em Espera
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ qtd_novos_servicos }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-
-            <!-- Card for Serviços em Andamento -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-hourglass-split"></i> <!-- Representa serviços em andamento -->
-                        Serviços em Andamento
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ qtd_servicos_em_andamento }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-
-            <!-- Card for Serviços Prontos para Finalizar -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-flag"></i> <!-- Representa serviços prontos para finalizar -->
-                        Serviços Prontos para Finalizar
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ qtd_servicos_para_finalizar }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-
-            <!-- Card for Serviços Finalizados -->
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="bi bi-check-circle"></i> <!-- Representa serviços finalizados -->
-                        Serviços Finalizados
-                    </h5>
-                    <p class="card-text" style="font-weight: 500;">Quantidade: {{ qtd_servicos_finalizados }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-body-secondary">Informações atualizadas</small>
-                </div>
-            </div>
-        </div>
-
-        <h6 style="color: #78828B; font-weight: 600;" class="mb-2">
-            Histórico de serviços:
-        </h6>
-
-        <div class="container-table p-1" style="max-height: 50vh; overflow-y: auto;">
-            <div class="input-group mb-3">
-                <input type="text" id="search-input" class="form-control" placeholder="Pesquisar..."
-                    onkeyup="filterTable()">
-            </div>
-            <table class="table table-striped table-hover" id="data-table">
+            
+            <table class="table table-hover" id="data-table">
                 <thead>
-                    <tr style="font-size: 16px; font-weight: 600;">
-                        <th scope="col">CLIENTE</th>
-                        <th scope="col">SERVIÇO</th>
-                        <th scope="col">RECEBIMENTO</th>
-                        <th scope="col">CONCLUSÃO</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">VER DETALHES</th>
+                    <tr 
+                        style="font-size: 12px; text-align: center;">
+
+                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem; border-top-left-radius: 12px; border-bottom-left-radius: 12px;">CLIENTE</th>
+                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem;">SERVIÇO</th>
+                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem;">RECEBIMENTO</th>
+                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem;">CONCLUSÃO</th>
+                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem; border-top-right-radius: 12px; border-bottom-right-radius: 12px;">STATUS</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for servico in servicos %}
-                    <tr id="servico-{{ servico.id }}">
-                        <td>{{ servico.ordem_servico.cliente.nome|truncatechars:20 }}</td>
-                        <td>{{ servico.repositorio.nome|truncatechars:20 }}</td>
+                    <tr id="servico-{{ servico.id }}"
+                        data-status="{{ servico.get_status_display|lower }}" 
+                        style="font-size: 12px; text-align: center; border-bottom: 3px solid var(--cinza-claro); cursor: pointer;" 
+                        data-url="{% url 'servico' servico.id %}" 
+                        onclick="window.location.href=this.getAttribute('data-url');">
+                    
+                        <td style="padding: 0.75rem;">{{ servico.ordem_servico.cliente.nome|truncatechars:40|upper }}</td>
+                        <td>{{ servico.repositorio.nome|truncatechars:20|upper }}</td>
                         <td>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</td>
                         <td>
                             {% if servico.data_conclusao %}
@@ -228,9 +181,39 @@
                             NÃO CONCLUÍDO
                             {% endif %}
                         </td>
-                        <td>{{ servico.get_status_display }}</td>
-                        <td>
-                            <a href="{% url 'servico' servico.id %}" class="btn button" target="_blank">Ver detalhes</a>
+                        <td style="text-align: center;">
+                            <span style="
+                                display: inline-flex; 
+                                align-items: center; 
+                                padding: 4px 8px; 
+                                border-radius: 16px; 
+                                border: 1px solid 
+                                    {% if servico.get_status_display|lower == 'concluída' %}#28a745{% endif %}
+                                    {% if servico.get_status_display|lower == 'em andamento' %}#ffc107{% endif %}
+                                    {% if servico.get_status_display|lower == 'em espera' %}#dc3545{% endif %};
+                                background-color: 
+                                    {% if servico.get_status_display|lower == 'concluída' %}#f0fdf4{% endif %}
+                                    {% if servico.get_status_display|lower == 'em andamento' %}#fff8e1{% endif %}
+                                    {% if servico.get_status_display|lower == 'em espera' %}#fde2e4{% endif %};
+                                color: 
+                                    {% if servico.get_status_display|lower == 'concluída' %}#155724{% endif %}
+                                    {% if servico.get_status_display|lower == 'em andamento' %}#856404{% endif %}
+                                    {% if servico.get_status_display|lower == 'em espera' %}#721c24{% endif %};
+                            ">
+                                <span style="
+                                    display: inline-block; 
+                                    width: 10px; 
+                                    height: 10px; 
+                                    border-radius: 50%; 
+                                    margin-right: 8px; 
+                                    background-color: 
+                                        {% if servico.get_status_display|lower == 'concluída' %}#28a745{% endif %}
+                                        {% if servico.get_status_display|lower == 'em andamento' %}#ffc107{% endif %}
+                                        {% if servico.get_status_display|lower == 'em espera' %}#dc3545{% endif %};
+                                ">
+                                </span>
+                                {{ servico.get_status_display|upper }}
+                            </span>
                         </td>
                     </tr>
                     {% endfor %}
@@ -243,7 +226,8 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Script JavaScript para Filtragem -->
+
+<!-- FILTRA A TABELA PELO NOME DO CLIENTE -->
 <script>
     function filterTable() {
         // Obtém o valor digitado no campo de pesquisa
@@ -275,6 +259,21 @@
                 tr[i].style.display = 'none';
             }
         }
+    }
+</script>
+
+<!-- FILTRA A TABELA PELO STATUS DO SERVIÇO -->
+<script>
+    function filterTable(status) {
+        const rows = document.querySelectorAll('#data-table tbody tr');
+        rows.forEach(row => {
+            const rowStatus = row.getAttribute('data-status');
+            if (status === '' || rowStatus === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
     }
 </script>
 {% endblock %}

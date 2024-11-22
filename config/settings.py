@@ -1,13 +1,18 @@
-from pathlib import Path, os
+from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+SECRET_KEY = 'django-insecure-4v&_#+*bj_o(o#l=(nonu@m9id(z7!i=y$#9@(aa+w+if#edp*'
 
-# Application definition
+DEBUG = True
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+# ALLOWED_HOSTS = [ 'www.ergogroupapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,8 +55,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+'''
+    BANCO DE DADOS DE DESENVOLVIMENTO
+'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR / 'db.sqlite3'),
+    }
+}
+
+'''
+    BANDO DE DADOS DE PRODUÇÃO
+'''
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ErgoGroup$ErgoGroupApp',
+#         'USER': 'ErgoGroup',
+#         'PASSWORD': 'Ergo#%2024',
+#         'HOST': 'ErgoGroup.mysql.pythonanywhere-services.com',
+#         'PORT': '3306',
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {

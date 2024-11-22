@@ -46,19 +46,19 @@
         </h3>
 
         <!-- Gráfico 1: Quantidade de serviços criados por mês -->
-        <div class="mb-4" style="width: 100%; height: 40vh; display: flex; justify-content: center; align-items: center;">
+        <div class="mb-4" style="width: 100%; height: 40vh; display: flex; justify-content: center; align-items: center; background-color: var(--cinza-claro); border-radius: 12px;">
             <canvas id="graficoServicosPorMes" style="max-width: 90%; height: 100%;"></canvas>
         </div>
 
         <!-- Container para os gráficos de status e vendas -->
         <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 40vh;">
             <!-- Gráfico 2: Quantidade de serviços por status -->
-            <div style="width: 40%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                <canvas id="graficoServicosPorStatus" style="max-width: 100%; height: 100%;"></canvas>
+            <div style="width: 40%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--cinza-claro); border-radius: 12px;">
+                <canvas id="graficoServicosPorStatus" style="max-width: 100%; height: 100%; position: absolute;"></canvas>
             </div>
 
             <!-- Gráfico 3: Valor de vendas por mês -->
-            <div style="width: 58%; height: 100%; display: flex; justify-content: center; align-items: center;">
+            <div style="width: 58%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--cinza-claro); border-radius: 12px;">
                 <canvas id="graficoVendasPorMes" style="max-width: 100%; height: 100%;"></canvas>
             </div>
         </div>
@@ -253,29 +253,22 @@
         let tr = table.getElementsByTagName('tr');
 
         // Loop através das linhas da tabela (ignorando o cabeçalho)
-        for (let i = 1; i < tr.length; i++) {  // Começa do índice 1 para ignorar o cabeçalho
-            let tdArray = tr[i].getElementsByTagName('td');
-            let found = false;
-
-            // Verifica se algum dos campos (td) da linha corresponde ao filtro
-            for (let j = 0; j < tdArray.length; j++) {
-                if (tdArray[j]) {
-                    let txtValue = tdArray[j].textContent || tdArray[j].innerText;
-                    if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                        found = true;
-                        break;
-                    }
+        for (let i = 1; i < tr.length; i++) { // Ignora o cabeçalho
+            let tdCliente = tr[i].getElementsByTagName('td')[0]; // Coluna CLIENTE
+            if (tdCliente) {
+                let txtValue = tdCliente.textContent || tdCliente.innerText;
+                // Verifica se o texto do cliente inclui o filtro
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    tr[i].style.display = ''; // Mostra a linha
+                } else {
+                    tr[i].style.display = 'none'; // Oculta a linha
                 }
-            }
-
-            // Mostra ou oculta a linha com base na pesquisa
-            if (found) {
-                tr[i].style.display = '';
-            } else {
-                tr[i].style.display = 'none';
             }
         }
     }
+
+    // Adiciona um evento para filtrar enquanto o usuário digita
+    document.getElementById('search-input').addEventListener('keyup', filterTable);
 </script>
 
 <!-- FILTRA A TABELA PELO STATUS DO SERVIÇO -->
@@ -294,13 +287,18 @@
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 <script>
     // Requisição para obter os dados
     fetch('/api/servicos-graficos/')
         .then(response => response.json())
         .then(data => {
-            // Dados do gráfico de serviços criados por mês
-            const labelsServicosPorMes = data.servicos_por_mes.map(item => item.mes);
+            // Gráfico de serviços criados por mês
+            const labelsServicosPorMes = data.servicos_por_mes.map(item => {
+                const date = new Date(item.mes);
+                return `${date.getMonth() + 1}/${date.getFullYear()}`;
+            });
             const dataServicosPorMes = data.servicos_por_mes.map(item => item.total);
 
             const ctx1 = document.getElementById('graficoServicosPorMes').getContext('2d');
@@ -309,26 +307,60 @@
                 data: {
                     labels: labelsServicosPorMes,
                     datasets: [{
-                        label: 'Serviços Criados por Mês',
                         data: dataServicosPorMes,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: '#2A6CB2',
+                        borderColor: '#2A6CB2',
                         borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Remove a legenda
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return `Total: ${tooltipItem.raw}`;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            color: '#FFFFFF',
+                            anchor: 'end',
+                            align: 'start',
+                            formatter: (value) => value
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels]
             });
 
-            // Dados do gráfico de serviços por status
-            const labelsServicosPorStatus = data.servicos_por_status.map(item => item.status);
-            const dataServicosPorStatus = data.servicos_por_status.map(item => item.total);
+            // Gráfico de serviços por status (gráfico de pizza)
+            const labelsServicosPorStatus = ['EM ESPERA', 'EM ANDAMENTO', 'CONCLUÍDA'];
+            const coresPastel = ['#f8d7da', '#fff3cd', '#d4edda']; // Vermelho, amarelo e verde pastéis
+
+            // Garante que os dados estejam na ordem correta
+            const dataServicosPorStatus = [0, 0, 0]; // Inicializa com 0 para cada status
+            data.servicos_por_status.forEach(item => {
+                switch (item.status) {
+                    case 'em_espera':
+                        dataServicosPorStatus[0] = item.total; // Total para "em_espera"
+                        break;
+                    case 'em_andamento':
+                        dataServicosPorStatus[1] = item.total; // Total para "em_andamento"
+                        break;
+                    case 'concluida':
+                        dataServicosPorStatus[2] = item.total; // Total para "concluida"
+                        break;
+                }
+            });
 
             const ctx2 = document.getElementById('graficoServicosPorStatus').getContext('2d');
             new Chart(ctx2, {
@@ -336,28 +368,52 @@
                 data: {
                     labels: labelsServicosPorStatus,
                     datasets: [{
-                        label: 'Serviços por Status',
                         data: dataServicosPorStatus,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)'
-                        ],
-                        borderWidth: 1
+                        backgroundColor: coresPastel,
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2
                     }]
                 },
                 options: {
-                    responsive: true
-                }
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right', // Posiciona a legenda à direita
+                            labels: {
+                                usePointStyle: true, // Usa bolinhas na legenda
+                                pointStyle: 'circle' // Define o estilo como círculo
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    const label = tooltipItem.label || '';
+                                    const value = tooltipItem.raw || 0;
+                                    return `${label}: ${value} serviços`;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            color: '#000000', // Cor do texto sobre a fatia
+                            anchor: 'end',
+                            align: 'start',
+                            formatter: (value) => `${value}`, // Exibe apenas o número
+                            font: {
+                                weight: 'bold',
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels] // Certifique-se de carregar o plugin ChartDataLabels
             });
 
-            // Dados do gráfico de vendas por mês
-            const labelsVendasPorMes = data.vendas_por_mes.map(item => item.mes);
+
+            // Gráfico de vendas por mês
+            const labelsVendasPorMes = data.vendas_por_mes.map(item => {
+                const date = new Date(item.mes);
+                return `${date.getMonth() + 1}/${date.getFullYear()}`;
+            });
             const dataVendasPorMes = data.vendas_por_mes.map(item => item.total_vendas);
 
             const ctx3 = document.getElementById('graficoVendasPorMes').getContext('2d');
@@ -366,25 +422,44 @@
                 data: {
                     labels: labelsVendasPorMes,
                     datasets: [{
-                        label: 'Valor de Vendas por Mês',
                         data: dataVendasPorMes,
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: '#2A6CB2',
+                        borderColor: '#2A6CB2',
                         borderWidth: 1
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Remove a legenda
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return `R$ ${tooltipItem.raw.toFixed(2)}`;
+                                }
+                            }
+                        },
+                        datalabels: {
+                            color: '#FFFFFF',
+                            anchor: 'end',
+                            align: 'start',
+                            formatter: (value) => value.toFixed(2)
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels]
             });
         })
         .catch(error => console.error('Erro ao carregar os dados dos gráficos:', error));
 </script>
+
 
 
 {% endblock %}

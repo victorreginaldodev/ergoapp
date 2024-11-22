@@ -26,7 +26,7 @@ def painel_de_controle(request):
         'servicos': servicos,
     }
 
-    return render(request, 'ordemServico/painel_controle.html', context)
+    return render(request, 'ordemServico/painel_controle/painel_controle.html', context)
 
 
 def servicos_graficos(request):

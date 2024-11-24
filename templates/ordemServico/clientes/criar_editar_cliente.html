@@ -1,19 +1,19 @@
 {% extends 'ordemServico/base.html' %}
 {% load static %}
-{% block title %} Clientes {% endblock %}
+{% block title %} Criar clientes {% endblock %}
 
 {% block content %}
 
-<div class="content page-title px-4">
+<div class="content page-title px-5 mb-5">
 
     <div class="container">
 
-        <h3 class="fs-5 mb-5">
-            <i class="fas fa-user-plus"></i>
-            Criar um novo cliente
-        </h3>
+        <h3 class="titulo-pagina">
+            <i class="bi bi-pencil-square"></i>
+            {% if cliente %} Editar Cliente - {{ cliente.nome|title }} {% else %} Criar um Novo Cliente {% endif %}
+        </h3>        
 
-        <form method="POST">
+        <form method="POST" class="mt-4">
             {% csrf_token %}
 
             <!-- Primeira linha do formulário: Nome do cliente -->
@@ -24,7 +24,7 @@
                         {{ form.nome }}
                     </div>
                 </div>
-                
+
                 <div class="col-md-3">
                     <label for="{{ form.tipo_cliente.id_for_label }}" class="form-label">Tipo de cliente:</label>
                     <div class="form-group">
@@ -48,14 +48,15 @@
                         {{ form.tipo_inscricao }}
                     </div>
                 </div>
-            
+
                 <div class="col-md-4">
-                    <label for="{{ form.numero_inscricao.id_for_label }}" class="form-label">Número de inscrição:</label>
+                    <label for="{{ form.numero_inscricao.id_for_label }}" class="form-label">Número de
+                        inscrição:</label>
                     <div class="form-group">
                         {{ form.numero_inscricao }}
                     </div>
                 </div>
-            </div>                     
+            </div>
 
             <!-- Terceira linha do formulário: Tipo de cliente e Observação -->
             <div class="row mb-4">
@@ -103,10 +104,33 @@
                     <div class="form-group">
                         {{ form.email_representante }}
                     </div>
-                </div>                
+                </div>
             </div>
 
-            <button type="submit" class="btn button py-2">Salvar novo cliente</button>
+            <!-- Campos adicionais antes do botão -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="form-check form-switch">
+                        {{ form.renovacao_automatica }}
+                        <label class="form-check-label" for="{{ form.renovacao_automatica.id_for_label }}">
+                            Renovação Automativa
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check form-switch">
+                        {{ form.cobranca_revisao_alteracao }}
+                        <label class="form-check-label" for="{{ form.cobranca_revisao_alteracao.id_for_label }}">
+                            Cobrança de Revisão/Alteração
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn button py-2">
+                {% if cliente %} Salvar Alterações {% else %} Salvar Novo Cliente {% endif %}
+            </button>
+            
         </form>
     </div>
 </div>
@@ -119,16 +143,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         function applyMask() {
-            var tipoInscricao = $('#id_tipo_inscricao').val(); 
-    
+            var tipoInscricao = $('#id_tipo_inscricao').val();
+
             $('#id_numero_inscricao').inputmask('remove');
 
             if (tipoInscricao === 'cpf') {
-                $('#id_numero_inscricao').inputmask('999.999.999-99');  
+                $('#id_numero_inscricao').inputmask('999.999.999-99');
             } else if (tipoInscricao === 'cnpj') {
-                $('#id_numero_inscricao').inputmask('99.999.999/9999-99'); 
+                $('#id_numero_inscricao').inputmask('99.999.999/9999-99');
             } else if (tipoInscricao === 'cei') {
                 $('#id_numero_inscricao').inputmask('99.999.99999/99');  // Máscara CEI
             } else if (tipoInscricao === 'cno') {
@@ -142,14 +166,14 @@
         applyMask();
 
         // Atualiza a máscara ao mudar o valor do select (quando o usuário escolhe outro tipo)
-        $('#id_tipo_inscricao').on('change', function() {
+        $('#id_tipo_inscricao').on('change', function () {
             applyMask();  // Chama a função para atualizar a máscara
         });
     });
 </script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Aplicar máscara que se adapta para telefones fixos e móveis
         $('#id_contato_representante').inputmask({
             mask: ['(99) 9999-9999', '(99) 9 9999-9999'],

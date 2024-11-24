@@ -12,20 +12,7 @@ class ClienteAdmin(admin.ModelAdmin):
     
     # Adicionar filtros laterais
     list_filter = ('tipo_cliente', 'tipo_inscricao', 'cliente_ativo', 'data_criacao')
-    
-    # Exibir as informações detalhadas ao editar ou adicionar um cliente
-    fieldsets = (
-        (None, {
-            'fields': ('nome', 'tipo_cliente', 'tipo_inscricao', 'numero_inscricao')
-        }),
-        ('Representante', {
-            'fields': ('nome_representante', 'setor_representante', 'email_representante', 'contato_representante'),
-            'classes': ('collapse',),
-        }),
-        ('Outros', {
-            'fields': ('observacao', 'cliente_ativo'),
-        }),
-    )
+
 
 
 @admin.register(Contato)

@@ -1,12 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Sum, Count, Q, F
+from django.http import JsonResponse
+from django.db.models import Sum
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib import messages
-from ordemServico.forms import OrdemServicoUpdateForm
 from ordemServico.models import OrdemServico, Profile
+from ordemServico.forms import OrdemServicoUpdateForm
+from django.contrib import messages
 
-# Função que verifica se o usuário é 'Diretor', 'Administrativo' ou 'Líder Técnico'
+
 def verificar_tipo_usuario(user):
+    """
+    Verifica se o usuário tem um papel permitido (Diretor, Administrativo ou Líder Técnico)
+    """
     try:
         return user.profile.role in [1, 2, 3]
     except Profile.DoesNotExist:
@@ -15,61 +19,26 @@ def verificar_tipo_usuario(user):
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 def financeiro(request):
-    if request.method == 'POST':
-        # Debug para verificar se os dados estão sendo submetidos corretamente
-        print(request.POST)
+    ordens_servicos = OrdemServico.objects.all()
 
-        ordem_servico_id = request.POST.get('ordem_servico_id')
-
-        if ordem_servico_id:
-            ordem_servico = get_object_or_404(OrdemServico, id=ordem_servico_id)
-            form = OrdemServicoUpdateForm(request.POST, instance=ordem_servico)
-
-            if form.is_valid():
-                form.save()
-                messages.success(request, 'Ordem de Serviço atualizada com sucesso.')
-                return redirect('financeiro')
-            else:
-                messages.error(request, 'Erro ao atualizar a Ordem de Serviço. Verifique os dados fornecidos.')
-        else:
-            messages.error(request, 'ID da Ordem de Serviço não fornecido.')
-    else:
-        ordem_servico_id = request.GET.get('ordem_servico_id')
-
-        if ordem_servico_id:
-            ordem_servico = get_object_or_404(OrdemServico, id=ordem_servico_id)
-            form = OrdemServicoUpdateForm(instance=ordem_servico)
-        else:
-            form = OrdemServicoUpdateForm()
-
-    # Filtra ordens de serviço para faturar, futuros faturamentos e faturados
-    para_faturar = OrdemServico.objects.annotate(
-        total_servicos=Count('servicos'),
-        total_concluidos=Count('servicos', filter=Q(servicos__status='concluida'))
-    ).filter(
-        total_servicos=F('total_concluidos'),  # Todos os serviços concluídos
-        faturamento='nao'  # Filtro para apenas ordens de serviço com faturamento "não"
-    )
-    cobrancas_imediatas = OrdemServico.objects.filter(cobranca_imediata = 'sim', faturamento='nao')
-
-    # Calcula valores e contagens
-    valor_total_concluidas = para_faturar.aggregate(Sum('valor'))['valor__sum'] or 0
-    valor_total_para_faturar = para_faturar.aggregate(Sum('valor'))['valor__sum'] or 0
-
-
-    contagem_concluidas = para_faturar.count()
-    contagem_para_faturar = para_faturar.count()
-    contagem_cobrancas_imediatas = cobrancas_imediatas.count()
+    # Lista de dicionários, cada um contendo uma ordem e seu formulário correspondente
+    ordens_com_formularios = [
+        {
+            "ordem": ordem,
+            "form": OrdemServicoUpdateForm(instance=ordem)
+        }
+        for ordem in ordens_servicos
+    ]
 
     context = {
-        'para_faturar': para_faturar,
-        'valor_total_concluidas': valor_total_concluidas,
-        'valor_total_para_faturar': valor_total_para_faturar,
-        'contagem_concluidas': contagem_concluidas,
-        'contagem_para_faturar': contagem_para_faturar,
-        'form': form,
-        'cobrancas_imediatas': cobrancas_imediatas,
-        'contagem_cobrancas_imediatas': contagem_cobrancas_imediatas,
+        "ordens_com_formularios": ordens_com_formularios,
+        "total_faturadas": ordens_servicos.filter(faturamento="sim").aggregate(Sum("valor"))["valor__sum"] or 0,
+        "total_liberadas": (
+            OrdemServico.objects.filter(cobranca_imediata="sim", faturamento="nao") |
+            OrdemServico.objects.filter(servicos__isnull=False, servicos__status="concluida")
+            .exclude(faturamento="sim")
+        ).distinct().aggregate(Sum("valor"))["valor__sum"] or 0,
+        "total_nao_liberadas": sum(ordem.valor for ordem in ordens_servicos if not ordem.liberada_para_faturamento()),
     }
 
-    return render(request, 'ordemServico/financeiro.html', context)
+    return render(request, "ordemServico/financeiro/financeiro.html", context)

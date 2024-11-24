@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 import locale
 
@@ -28,6 +28,20 @@ def painel_de_controle(request):
 
     return render(request, 'ordemServico/painel_controle/painel_controle.html', context)
 
+
+@login_required
+@user_passes_test(verificar_tipo_usuario)
+def detalhe_servico_modal(request, servico_id):
+    servico = get_object_or_404(Servico, id=servico_id)
+    data = {
+        'cliente': servico.ordem_servico.cliente.nome,
+        'servico': servico.repositorio.nome,
+        'data_recebimento': servico.ordem_servico.data_criacao.strftime('%d/%m/%Y'),
+        'data_conclusao': servico.data_conclusao.strftime('%d/%m/%Y') if servico.data_conclusao else None,
+        'status': servico.get_status_display(),
+        'descricao': servico.descricao,
+    }
+    return JsonResponse(data)
 
 def servicos_graficos(request):
     # 1. Quantidade de serviços criados por mês

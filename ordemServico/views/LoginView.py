@@ -23,7 +23,7 @@ def user_login(request):
                 return redirect('tecnico')  # Redireciona para a página 'tecnico'
         
         else:
-            messages.error(request, "Usuário ou senha inválidos!")
+           messages.error(request, "Usuário ou senha inválidos!")
     
     return render(request, 'ordemServico/Login.html')
 

@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, Textarea, EmailInput
+from django.forms import ModelForm, TextInput, Select, Textarea, EmailInput, CheckboxInput
 from ordemServico.models import Cliente
 
 class ClienteForm(ModelForm):
@@ -61,6 +61,13 @@ class ClienteForm(ModelForm):
             }),
             'cliente_ativo': Select(attrs={
                 'class': 'form-select',
-
+            }),
+            'renovacao_automatica': CheckboxInput(attrs={
+                'class': 'form-check-input',
+                'id': 'id_renovacao_automatica',
+            }),
+            'cobranca_revisao_alteracao': CheckboxInput(attrs={
+                'class': 'form-check-input',
+                'id': 'id_cobranca_revisao_alteracao',
             }),
         }

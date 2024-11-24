@@ -1,25 +1,29 @@
-from django.forms import ModelForm, Select, TextInput, Textarea, NumberInput, CheckboxInput, DateInput
+from django.forms import Select, TextInput, DateInput
 from django import forms
 from ordemServico.models import OrdemServico
 
 class OrdemServicoUpdateForm(forms.ModelForm):
     class Meta:
         model = OrdemServico
-        fields = ['faturamento', 'numero_nf', 'data_faturamento']
+        fields = ['faturamento', 'data_faturamento', 'numero_nf']
         widgets = {
             'faturamento': Select(attrs={
-                'class': 'form-select', 
-                'class': 'form-control w-100',
+                'class': 'form-select w-100 modal-input', 
             }),
-
             'numero_nf': TextInput(attrs={
-                'class': 'form-control w-100',
+                'class': 'form-control w-100 modal-input',
             }),
-
-            'data_faturamento': forms.DateInput(attrs={
-                'type': 'date',
-                'class': 'form-control', 
-                'class': 'form-control w-100'
-            }),
+            'data_faturamento': DateInput(
+                attrs={
+                    'type': 'date',
+                    'class': 'form-control w-100 modal-input', 
+                },
+                format='%Y-%m-%d'  # Especifica o formato da data
+            ),
         }
-        
+
+    # Sobrescreve o método init para ajustar o formato da data
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'data_faturamento' in self.fields:
+            self.fields['data_faturamento'].widget.attrs['value'] = self.instance.data_faturamento

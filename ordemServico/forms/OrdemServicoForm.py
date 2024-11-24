@@ -6,7 +6,7 @@ class OrdemServicoForm(ModelForm):
     
     class Meta:
         model = OrdemServico
-        fields = '__all__'
+        exclude = ['usuario_criador', 'concluida', 'faturamento', 'numero_nf', 'data_faturamento']
         widgets = {
             'cliente': Select(attrs={
                 'class': 'form-select w-100', 
@@ -18,6 +18,7 @@ class OrdemServicoForm(ModelForm):
                 'id': 'valorInput',
                 'aria-label': 'Valor',
                 'placeholder': 'R$ 00,00',
+                'required': True
             }),
             'cobranca_imediata': Select(attrs={
                 'class': 'form-select w-100', 

@@ -185,10 +185,11 @@
                 <tbody>
                     {% for servico in servicos %}
                     <tr id="servico-{{ servico.id }}"
+                        style="font-size: 12px; text-align: center; border-bottom: 3px solid var(--cinza-claro); cursor: pointer;"
                         data-status="{{ servico.get_status_display|lower }}" 
-                        style="font-size: 12px; text-align: center; border-bottom: 3px solid var(--cinza-claro); cursor: pointer;" 
-                        data-url="{% url 'servico' servico.id %}" 
-                        onclick="window.location.href=this.getAttribute('data-url');">
+                        data-id="{{ servico.id }}"
+
+                        onclick="openServiceModal(this)">
                     
                         <td style="padding: 0.75rem;">{{ servico.ordem_servico.cliente.nome|truncatechars:40|upper }}</td>
                         <td>{{ servico.repositorio.nome|truncatechars:20|upper }}</td>
@@ -238,6 +239,88 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal completa no template painel_controle.html -->
+<div class="modal fade" id="serviceDetailsModal" tabindex="-1" aria-labelledby="serviceDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 90%;">
+        <div class="modal-content">
+            <!-- Cabeçalho da Modal -->
+            <div class="modal-header p-3">
+                <h5 class="modal-title" id="serviceDetailsModalLabel" style="color: var(--cinza); font-weight: 600;">Detalhes do Serviço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            
+            <!-- Corpo da Modal -->
+            <div class="modal-body p-3" id="serviceDetailsContent">
+                <!-- Campos para dados do serviço -->
+                <div class="row">
+                    <div class="col-4">
+                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Cliente:</strong>
+                        <p id="cliente-nome" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
+                    </div>
+                    <div class="col-4">
+                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Serviço:</strong>
+                        <p id="servico-nome" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-2">
+                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Data de Recebimento:</strong>
+                        <p id="data-recebimento" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
+                    </div>
+                    <div class="col-2">
+                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Data de Conclusão:</strong>
+                        <p id="data-conclusao" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
+                    </div>
+                    <div class="col-2">
+                        <!-- Coloque o texto Status acima -->
+                        <strong 
+                            style="
+                                color: var(--cinza); 
+                                font-weight: 500; 
+                                font-size: 14px !important; 
+                                display: block; /* Garante que fique em uma nova linha */
+                                margin-bottom: 4px; /* Espaçamento entre o texto Status e o conteúdo */
+                            ">
+                            Status:
+                        </strong>
+                        <!-- Coloque o conteúdo abaixo -->
+                        <span id="status" style="
+                            display: inline-flex;
+                            align-items: center;
+                            padding: 4px 8px;
+                            border-radius: 16px;
+                            font-weight: bold;
+                            border: 1px solid transparent;
+                            background-color: #f8f9fa; /* Cor padrão */
+                            color: #6c757d; /* Cor padrão */
+                            font-size: 12px; /* Garante o tamanho do texto principal */
+                        ">
+                            <span id="status-indicator" style="
+                                display: inline-block;
+                                width: 10px;
+                                height: 10px;
+                                border-radius: 50%;
+                                margin-right: 8px;
+                                background-color: #6c757d; /* Cor padrão */
+                            "></span>
+                            <span id="status-text" style="font-size: 12px;">Carregando...</span>
+                        </span>
+                    </div>                 
+                </div>
+                <div class="mt-5">
+                    <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Descrição:</strong>
+                    <p id="descricao" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
+                </div>
+            </div>            
+            
+            <!-- Rodapé da Modal -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
         </div>
     </div>
 </div>
@@ -339,9 +422,9 @@
                             }
                         },
                         datalabels: {
-                            color: '#000000',
-                            anchor: 'end',
-                            align: 'start',
+                            color: '#fff',
+                            anchor: 'center',
+                            align: 'center',
                             formatter: (value) => value
                         }
                     },
@@ -457,9 +540,9 @@
                             }
                         },
                         datalabels: {
-                            color: '#000000',
-                            anchor: 'end',
-                            align: 'start',
+                            color: '#fff',
+                            anchor: 'center',
+                            align: 'center',
                             formatter: (value) => value.toLocaleString('pt-BR', {
                                 style: 'currency',
                                 currency: 'BRL'
@@ -482,4 +565,66 @@
         .catch(error => console.error('Erro ao carregar os dados dos gráficos:', error));
 </script>
 
+<script>
+    function openServiceModal(row) {
+        const serviceId = row.getAttribute('data-id');
+        const modal = new bootstrap.Modal(document.getElementById('serviceDetailsModal'));
+        const modalBody = document.getElementById('serviceDetailsContent');
+    
+        // Exibe a modal
+        modal.show();
+    
+        // Reseta os campos para o estado inicial
+        document.getElementById('status-text').textContent = 'Carregando...';
+        document.getElementById('status').style.backgroundColor = '#f8f9fa';
+        document.getElementById('status').style.borderColor = 'transparent';
+        document.getElementById('status').style.color = '#6c757d';
+        document.getElementById('status-indicator').style.backgroundColor = '#6c757d';
+        document.getElementById('status-text').style.fontSize = '12px'; // Aplica o tamanho inline diretamente
+    
+        // Faz a requisição para obter os dados do serviço
+        fetch(`/servico/${serviceId}/`)
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao carregar os detalhes do serviço.');
+                return response.json(); // Retorna os dados como JSON
+            })
+            .then(data => {
+                // Atualiza outros campos
+                document.getElementById('cliente-nome').textContent = data.cliente;
+                document.getElementById('servico-nome').textContent = data.servico;
+                document.getElementById('data-recebimento').textContent = data.data_recebimento;
+                document.getElementById('data-conclusao').textContent = data.data_conclusao || 'NÃO CONCLUÍDO';
+                document.getElementById('descricao').textContent = data.descricao;
+    
+                // Atualiza o campo de status com texto e estilos
+                const statusElement = document.getElementById('status');
+                const statusIndicator = document.getElementById('status-indicator');
+                const statusText = document.getElementById('status-text');
+    
+                statusText.textContent = data.status;
+    
+                // Define os estilos com base no status
+                if (data.status.toLowerCase() === 'concluída') {
+                    statusElement.style.color = '#155724';
+                    statusElement.style.backgroundColor = '#f0fdf4';
+                    statusElement.style.borderColor = '#28a745';
+                    statusIndicator.style.backgroundColor = '#28a745';
+                } else if (data.status.toLowerCase() === 'em andamento') {
+                    statusElement.style.color = '#856404';
+                    statusElement.style.backgroundColor = '#fff8e1';
+                    statusElement.style.borderColor = '#ffc107';
+                    statusIndicator.style.backgroundColor = '#ffc107';
+                } else if (data.status.toLowerCase() === 'em espera') {
+                    statusElement.style.color = '#721c24';
+                    statusElement.style.backgroundColor = '#fde2e4';
+                    statusElement.style.borderColor = '#dc3545';
+                    statusIndicator.style.backgroundColor = '#dc3545';
+                }
+            })
+            .catch(error => {
+                modalBody.innerHTML = `<p class="text-danger text-center">${error.message}</p>`;
+            });
+    }
+</script>
+    
 {% endblock %}

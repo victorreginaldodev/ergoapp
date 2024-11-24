@@ -67,6 +67,17 @@ class OrdemServico(models.Model):
     numero_nf = models.IntegerField(null=True, blank=True)
     data_faturamento = models.DateField(null=True, blank=True)
 
+    def liberada_para_faturamento(self):
+        
+        if self.cobranca_imediata == 'sim':
+            return True
+
+        if self.servicos.exists():
+            if self.servicos.filter(status='concluida').count() == self.servicos.count():
+                return True
+
+        return False
+
     def __str__(self):
         cliente_nome = self.cliente.nome if self.cliente else "Sem cliente"
         return f"{cliente_nome} - {self.valor}"

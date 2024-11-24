@@ -20,7 +20,7 @@ body {
     top: 0;
     left: 0;
     height: 100%;
-    width: 180px;
+    width: 220px;
     background: linear-gradient(135deg, var(--azul-secundario) 10%, var(--azul-principal) 90%);
     padding-top: 30px;
     padding-left: 10px;
@@ -60,7 +60,7 @@ body {
 
 /* CONTENT */
 .content {
-    margin-left: 180px;
+    margin-left: 220px;
 }
 
 .form-control {

@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.db.models import Sum
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
+
 from ordemServico.models import OrdemServico, Profile
 from ordemServico.forms import OrdemServicoUpdateForm
-from django.contrib import messages
 
 
 def verificar_tipo_usuario(user):
@@ -42,3 +43,40 @@ def financeiro(request):
     }
 
     return render(request, "ordemServico/financeiro/financeiro.html", context)
+
+@login_required
+@user_passes_test(verificar_tipo_usuario)
+@csrf_exempt
+def salvar_ordem_servico(request):
+    if request.method == "POST" and request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        ordem_id = request.POST.get("ordem_id")
+        if not ordem_id:
+            return JsonResponse({"success": False, "message": "ID da ordem não fornecido."}, status=400)
+
+        ordem = get_object_or_404(OrdemServico, id=ordem_id)  # Garante que a ordem existe
+        form = OrdemServicoUpdateForm(request.POST, instance=ordem)
+
+        if form.is_valid():
+            form.save()  # Salva os dados no banco
+            return JsonResponse({"success": True, "message": "Dados salvos com sucesso!"})
+        else:
+            return JsonResponse({
+                "success": False,
+                "errors": form.errors.as_json()
+            }, status=400)
+
+    return JsonResponse({"success": False, "message": "Requisição inválida."}, status=400)
+
+@login_required
+@user_passes_test(verificar_tipo_usuario)
+def atualizar_contador_liberadas(request):
+    if request.method == "GET" and request.headers.get("x-requested-with") == "XMLHttpRequest":
+        # Itera sobre todas as ordens e conta as liberadas para faturamento e não faturadas
+        total_liberadas = sum(
+            1 for ordem in OrdemServico.objects.filter(faturamento="nao")
+            if ordem.liberada_para_faturamento()
+        )
+
+        return JsonResponse({"total_liberadas": total_liberadas})
+    
+    return JsonResponse({"error": "Requisição inválida."}, status=400)

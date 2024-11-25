@@ -23,6 +23,14 @@
         color: var(--cinza);
         font-size: 14px;
     }
+
+    #spinner-container {
+        transition: all 0.3s ease;
+        /* Suaviza a exibição */
+        max-width: 300px;
+        color: var(--cinza-escuro);
+        /* Cor do texto */
+    }
 </style>
 {% endblock %}
 
@@ -141,18 +149,20 @@
                     aria-controls="collapse{{ item.ordem.id }}">
                     <div class="row w-100">
                         <div class="col-1">
-                            <p style="color: var(--cinza); font-weight: 600; font-size: 12px;">{{ item.ordem.id }}</p>
+                            <p style="color: var(--cinza); font-weight: 600;">{{ item.ordem.id }}</p>
                         </div>
                         <div class="col-6">
-                            <p style="color: var(--cinza); font-size: 12px;">{{ item.ordem.cliente.nome|truncatechars:45 }}</p>
+                            <p style="color: var(--cinza);">{{ item.ordem.cliente.nome|truncatechars:45 }}</p>
                         </div>
                         <div class="col-2">
                             {% if item.ordem.get_faturamento_display == "Sim" %}
-                            <p style="background-color: #D4EDDA; color: #155724; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
+                            <p
+                                style="background-color: #D4EDDA; color: #155724; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
                                 Faturada
                             </p>
                             {% elif item.ordem.get_faturamento_display == "Não" %}
-                            <p style="background-color: #F8D7DA; color: #721C24; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
+                            <p
+                                style="background-color: #F8D7DA; color: #721C24; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
                                 Não faturada
                             </p>
                             {% else %}
@@ -161,11 +171,13 @@
                         </div>
                         <div class="col-2">
                             {% if item.ordem.liberada_para_faturamento %}
-                            <p style="background-color: #FFF3CD; color: #856404; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
+                            <p
+                                style="background-color: #D4EDDA; color: #155724; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
                                 Liberada
                             </p>
                             {% else %}
-                            <p style="background-color: #E2E3E5; color: #6C757D; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
+                            <p
+                                style="background-color: #E2E3E5; color: #6C757D; font-weight: bold; text-align: center; padding: 0.3rem; font-size: 12px; border-radius: 5px;">
                                 Aguardando liberação
                             </p>
                             {% endif %}
@@ -176,7 +188,7 @@
             <div id="collapse{{ item.ordem.id }}" class="accordion-collapse collapse"
                 aria-labelledby="heading{{ item.ordem.id }}" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body p-4">
-    
+
                     <h3 style="color: var(--cinza)">Informações da ordem de serviço:</h3>
                     <table class="tabela-accordion mt-3"
                         style="width: 100%; border-collapse: collapse; margin-top: 10px;">
@@ -223,42 +235,60 @@
                             </tr>
                         </tbody>
                     </table>
-    
+
                     <!-- Formulário -->
-                    <h4 class="mt-4 mb-3" style="color: var(--cinza)">Atualizar Informações</h4>
-                    <form method="post">
+                    <h4 class="mt-4 mb-3" style="color: var(--cinza)">Atualizar Informações do faturamento:</h4>
+                    <form method="post" action="{% url 'salvar_ordem_servico' %}" class="form-ordem-servico"
+                        data-id="{{ item.ordem.id }}">
                         {% csrf_token %}
                         <input type="hidden" name="ordem_id" value="{{ item.ordem.id }}">
-                        
+
                         <div class="row">
                             <div class="col-2">
                                 <label for="faturamento-{{ item.ordem.id }}" class="form-label">Faturamento</label>
                                 {{ item.form.faturamento }}
                             </div>
                             <div class="col-2">
-                                <label for="data_faturamento-{{ item.ordem.id }}" class="form-label">Data Faturamento</label>
+                                <label for="data_faturamento-{{ item.ordem.id }}" class="form-label">Data
+                                    Faturamento</label>
                                 {{ item.form.data_faturamento }}
-                            </div>                                               
+                            </div>
                             <div class="col-2">
                                 <label for="numero_nf-{{ item.ordem.id }}" class="form-label">Número NF</label>
                                 {{ item.form.numero_nf }}
                             </div>
                         </div>
-    
-                        <button type="submit" class="button mt-2">Atualizar</button>
+
+                        <button type="button" class="button mt-2 salvar-formulario">Atualizar</button>
                     </form>
-    
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-    
-    
-    
-
-
 </div>
+
+<div id="spinner-container" style="
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1055;
+    display: none; /* Escondido por padrão */
+    align-items: center;
+    justify-content: center;
+    background-color: var(--cinza-claro);
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+">
+    <div id="spinner" class="spinner-border text-primary" role="status"
+        style="width: 20px; height: 20px; margin-right: 10px;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <span id="spinner-message">Faturando...</span>
+</div>
+
+
 {% endblock %}
 
 {% block scripts %}
@@ -296,32 +326,32 @@ brasileiro de moeda (R$). -->
         const botaoLimparFiltros = document.getElementById("limpar_filtros");
         const contadorLiberadas = document.getElementById("contador_liberadas");
 
-        // Função para atualizar o contador de ordens liberadas
+        // Função para buscar o número atualizado de ordens liberadas no servidor
         function atualizarContadorLiberadas() {
-            const linhas = tabela.querySelectorAll(".accordion-item"); // Itens do Accordion
-            let totalLiberadas = 0;
-
-            linhas.forEach((linha) => {
-                const liberadaSpan = linha.querySelector(".col-2:nth-child(4) p"); // Coluna Liberada
-                const faturamentoSpan = linha.querySelector(".col-2:nth-child(3) p"); // Coluna Faturamento
-
-                if (liberadaSpan && faturamentoSpan) {
-                    const liberada = liberadaSpan.textContent.trim().toLowerCase();
-                    const faturamento = faturamentoSpan.textContent.trim().toLowerCase();
-
-                    if (liberada === "liberada" && faturamento === "não faturada") {
-                        totalLiberadas++;
+            fetch("/atualizar-contador-liberadas/", {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar dados do contador.");
                     }
-                }
-            });
-
-            // Atualiza o contador na tela
-            if (totalLiberadas > 0) {
-                contadorLiberadas.textContent = totalLiberadas;
-                contadorLiberadas.style.display = "flex";
-            } else {
-                contadorLiberadas.style.display = "none";
-            }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Atualiza o contador com o valor retornado do servidor
+                    if (data.total_liberadas > 0) {
+                        contadorLiberadas.textContent = data.total_liberadas;
+                        contadorLiberadas.style.display = "flex";
+                    } else {
+                        contadorLiberadas.style.display = "none";
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao atualizar o contador:", error);
+                });
         }
 
         // Função para filtrar ordens liberadas
@@ -395,4 +425,63 @@ brasileiro de moeda (R$). -->
 </script>
 
 
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".salvar-formulario");
+        const spinnerContainer = document.getElementById("spinner-container");
+        const spinner = document.getElementById("spinner");
+        const spinnerMessage = document.getElementById("spinner-message");
+
+        function showSpinner(message = "Faturando...") {
+            spinnerContainer.style.display = "flex"; // Exibe o spinner
+            spinnerMessage.textContent = message; // Atualiza a mensagem do spinner
+            spinner.style.display = "block"; // Garante que o ícone do spinner apareça
+        }
+
+        function hideSpinner() {
+            setTimeout(() => {
+                spinnerContainer.style.display = "none"; // Esconde o spinner
+            }, 3000); // Esconde após 3 segundos para que o usuário veja a mensagem
+        }
+
+        buttons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const form = this.closest(".form-ordem-servico");
+                const csrfToken = form.querySelector("input[name='csrfmiddlewaretoken']").value;
+                const formData = new FormData(form);
+
+                showSpinner(); // Mostra o spinner ao começar a requisição
+
+                fetch("/salvar-ordem-servico/", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    body: formData,
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            return response.json().then((data) => {
+                                throw data;
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        spinnerMessage.textContent = "Ordem de serviço faturada com sucesso!"; // Mensagem de sucesso
+                        spinner.style.display = "none"; // Esconde o ícone do spinner
+                        hideSpinner(); // Esconde o container após um tempo
+                    })
+                    .catch((data) => {
+                        spinnerMessage.textContent = "Erro ao faturar uma ordem de serviço."; // Mensagem de erro
+                        spinner.style.display = "none"; // Esconde o ícone do spinner
+                        hideSpinner(); // Esconde o container após um tempo
+                    });
+            });
+        });
+    });
+
+</script>
 {% endblock %}

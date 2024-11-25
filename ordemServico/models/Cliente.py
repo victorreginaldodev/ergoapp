@@ -34,7 +34,7 @@ class Cliente(models.Model):
     cliente_ativo = models.CharField(null=True, blank=True, max_length=5, choices=CLIENTE_ATIVO, default='sim')
 
     renovacao_automatica = models.BooleanField(default=False)
-    cobranca_revisao_alteracao = models.BooleanField(default=False)
+    cobranca_revisao_alteracao = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nome

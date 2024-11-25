@@ -1,4 +1,4 @@
-from django.forms import ModelForm, Select, DateInput
+from django.forms import  Select, DateInput, TextInput
 from django import forms
 from ordemServico.models import MiniOS, Cliente, RepositorioMiniOS, Profile
 
@@ -77,3 +77,18 @@ class OsRapidaFullUpdateForm(forms.ModelForm):
         for field in ['data_recebimento', 'data_inicio', 'data_termino']:
             if self.instance and getattr(self.instance, field):
                 self.fields[field].initial = getattr(self.instance, field).strftime('%Y-%m-%d')
+
+
+class OsRapidaFaturamentoForm(forms.ModelForm):
+    
+    class Meta:
+        model = MiniOS 
+        fields = ['faturamento', 'n_nf']
+        widgets = {
+            'faturamento': forms.Select(attrs={
+                'class': 'form-select w-100',
+            }),
+            'n_nf': TextInput(attrs={
+                'class': 'form-control w-50',
+            }),
+        }

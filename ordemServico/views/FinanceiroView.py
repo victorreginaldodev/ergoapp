@@ -4,8 +4,8 @@ from django.db.models import Sum
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 
-from ordemServico.models import OrdemServico, Profile
-from ordemServico.forms import OrdemServicoUpdateForm
+from ordemServico.models import OrdemServico, Profile, MiniOS
+from ordemServico.forms import OrdemServicoUpdateForm, OsRapidaFaturamentoForm
 
 
 def verificar_tipo_usuario(user):
@@ -44,6 +44,7 @@ def financeiro(request):
 
     return render(request, "ordemServico/financeiro/financeiro.html", context)
 
+
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 @csrf_exempt
@@ -67,6 +68,7 @@ def salvar_ordem_servico(request):
 
     return JsonResponse({"success": False, "message": "Requisição inválida."}, status=400)
 
+
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 def atualizar_contador_liberadas(request):
@@ -80,3 +82,53 @@ def atualizar_contador_liberadas(request):
         return JsonResponse({"total_liberadas": total_liberadas})
     
     return JsonResponse({"error": "Requisição inválida."}, status=400)
+
+
+@login_required
+@user_passes_test(verificar_tipo_usuario)
+def faturar_os_rapida(request):
+    # Filtrar MiniOS pelo nome do serviço contendo "CORREÇÃO CLIENTE"
+    # e clientes com "cobranca_revisao_alteracao=True"
+    os_rapidas = MiniOS.objects.filter(
+        servico__nome__icontains="CORREÇÃO CLIENTE",  # Filtra pelo nome do serviço
+        cliente__cobranca_revisao_alteracao=True  # Verifica se o cliente cobra revisões
+    )
+
+    # Associar formulários a cada MiniOS
+    os_rapidas_com_formularios = [
+        {
+            "os_rapida": os_rapida,
+            "form": OsRapidaFaturamentoForm(instance=os_rapida)
+        }
+        for os_rapida in os_rapidas
+    ]
+
+    # Contexto para o template
+    context = {
+        "os_rapidas_com_formularios": os_rapidas_com_formularios,
+    }
+
+    return render(request, "ordemServico/financeiro/financeiro_os_rapidas.html", context)
+
+@csrf_exempt
+def salvar_os_rapida(request):
+    if request.method == "POST" and request.headers.get("x-requested-with") == "XMLHttpRequest":
+        os_rapida_id = request.POST.get("minios_id")
+        os_rapida = get_object_or_404(MiniOS, id=os_rapida_id)
+
+        form = OsRapidaFaturamentoForm(request.POST, instance=os_rapida)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({
+                "success": True,
+                "message": "Faturamento da ordem de serviço rápida feito com sucesso!",
+                "faturamento": os_rapida.faturamento,  # Retorna o estado atualizado
+            })
+        else:
+            return JsonResponse({
+                "success": False,
+                "message": "Erro ao salvar MiniOS.",
+                "errors": form.errors.as_json(),
+            }, status=400)
+
+    return JsonResponse({"success": False, "message": "Requisição inválida."}, status=400)

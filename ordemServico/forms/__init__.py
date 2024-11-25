@@ -4,7 +4,7 @@ from .OrdemServicoForm import OrdemServicoForm
 from .OrdemServicoUpdateForm import OrdemServicoUpdateForm
 
 from .OsRapidaForm import OsRapidaForm
-from .OsRapidaUpdateForm import OsRapidaUpdateForm, OsRapidaFullUpdateForm
+from .OsRapidaUpdateForm import OsRapidaUpdateForm, OsRapidaFullUpdateForm, OsRapidaFaturamentoForm
 
 from .ServicoForm import ServicoForm
 from .ServicoUpdateForm import ServicoUpdateForm

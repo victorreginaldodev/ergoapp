@@ -45,11 +45,8 @@
 
 <div class="content page-title administrativo mb-5 px-5">
 
-    <div id="alert-container" style="position: fixed; top: 10px; right: 10px; z-index: 1055; width: 300px;">
-        <div class="alert alert-success fade show" role="alert">
-           Faturamento da ordem de serviço rápida feito com sucesso!
-        </div>
-    </div>
+    <div id="alert-container" style="position: fixed; top: 10px; right: 10px; z-index: 1055; width: 300px;"></div>
+
     
 
 
@@ -359,14 +356,16 @@
             // Limpa o contêiner antes de adicionar um novo alerta
             alertContainer.innerHTML = "";
 
+            // Cria o alerta
             const alert = document.createElement("div");
-            alert.className = "alert alert-success fade show"; // Removido alert-dismissible
+            alert.className = "alert alert-success fade show";
             alert.style.position = "fixed";
             alert.style.top = "10px";
             alert.style.right = "10px";
             alert.style.zIndex = "1055";
             alert.innerHTML = `${mensagem}`;
 
+            // Adiciona ao contêiner
             alertContainer.appendChild(alert);
 
             // Remove o alerta automaticamente após 3 segundos
@@ -382,14 +381,16 @@
             // Limpa o contêiner antes de adicionar um novo alerta
             alertContainer.innerHTML = "";
 
+            // Cria o alerta
             const alert = document.createElement("div");
-            alert.className = "alert alert-danger fade show"; // Removido alert-dismissible
+            alert.className = "alert alert-danger fade show";
             alert.style.position = "fixed";
             alert.style.top = "10px";
             alert.style.right = "10px";
             alert.style.zIndex = "1055";
             alert.innerHTML = `${mensagem}`;
 
+            // Adiciona ao contêiner
             alertContainer.appendChild(alert);
 
             // Remove o alerta automaticamente após 3 segundos
@@ -400,6 +401,6 @@
         }
     });
 
-
 </script>
+
 {% endblock %}

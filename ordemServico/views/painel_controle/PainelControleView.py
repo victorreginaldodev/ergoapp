@@ -5,6 +5,7 @@ import locale
 from django.http import JsonResponse
 from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
+from datetime import datetime, timedelta
 
 from ordemServico.models import Profile, OrdemServico, Servico
 
@@ -98,29 +99,31 @@ def detalhe_servico_modal(request, servico_id):
     return JsonResponse(data)
 
 
-
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 def servicos_graficos(request):
-    # 1. Quantidade de serviços criados por mês
+    # Obtém a data de 12 meses atrás
+    data_limite = datetime.now() - timedelta(days=365)
+
+    # 1. Quantidade de serviços criados por mês nos últimos 12 meses
     servicos_por_mes = (
-        Servico.objects.filter(ordem_servico__data_criacao__isnull=False)
+        Servico.objects.filter(ordem_servico__data_criacao__gte=data_limite)
         .annotate(mes=TruncMonth('ordem_servico__data_criacao'))
         .values('mes')
         .annotate(total=Count('id'))
         .order_by('mes')
     )
 
-    # 2. Quantidade de serviços por status
+    # 2. Quantidade de serviços por status (mantido sem filtro de 12 meses)
     servicos_por_status = (
         Servico.objects.values('status')
         .annotate(total=Count('id'))
         .order_by('status')
     )
 
-    # 3. Valor de vendas por mês
+    # 3. Valor de vendas por mês nos últimos 12 meses
     vendas_por_mes = (
-        OrdemServico.objects.filter(data_criacao__isnull=False)
+        OrdemServico.objects.filter(data_criacao__gte=data_limite)
         .annotate(mes=TruncMonth('data_criacao'))
         .values('mes')
         .annotate(total_vendas=Sum('valor'))

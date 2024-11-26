@@ -32,6 +32,13 @@
         border-radius: 4px;
     }
 
+    .active-filter {
+        border-color: black; /* Destaca a borda */
+        font-weight: bold;   /* Destaca o texto */
+        background-color: #e6e6e6; /* Opção: muda o fundo */
+    }
+
+
 
 </style>
 {% endblock %}
@@ -72,56 +79,11 @@
 
         <div style="display: flex; align-items: center; gap: 10px;" class="mb-1">
             <!-- Campo de Pesquisa -->
-            <input type="text" id="search-input" class="form-control w-50" placeholder="Pesquisar..." style=" padding: 0.5rem; font-size: 14px; background-color: var(--cinza-claro);">
+            <input type="text" id="search-input" class="form-control w-50" placeholder="Pesquisar..." style="padding: 0.5rem; font-size: 14px; background-color: var(--cinza-claro);">
         
             <!-- Botões de Filtro -->
-            <button onclick="filterTable('concluída')" 
-                    style="
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 8px 16px;
-                        border-radius: 16px;
-                        border: 1px solid #28a745;
-                        background-color: #f0fdf4;
-                        color: #155724;
-                        font-size: 12px;
-                        cursor: pointer;
-                        font-weight: bold;">
-                <span style="
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                        background-color: #28a745;">
-                </span>
-                Concluído
-            </button>
-        
-            <button onclick="filterTable('em andamento')" 
-                    style="
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 8px 16px;
-                        border-radius: 16px;
-                        border: 1px solid #ffc107;
-                        background-color: #fff8e1;
-                        color: #856404;
-                        font-size: 12px;
-                        cursor: pointer;
-                        font-weight: bold;">
-                <span style="
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                        background-color: #ffc107;">
-                </span>
-                Em andamento
-            </button>
-        
-            <button onclick="filterTable('em espera')" 
+            <button class="filter-button"
+                    onclick="filterTable('em_espera', this)" 
                     style="
                         display: inline-flex;
                         align-items: center;
@@ -131,8 +93,7 @@
                         background-color: #fde2e4;
                         color: #721c24;
                         font-size: 12px;
-                        cursor: pointer;
-                        font-weight: bold;">
+                        cursor: pointer;">
                 <span style="
                         display: inline-block;
                         width: 10px;
@@ -144,7 +105,54 @@
                 Em espera
             </button>
         
-            <button onclick="filterTable('')" 
+            <button class="filter-button"
+                    onclick="filterTable('em_andamento', this)" 
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        padding: 8px 16px;
+                        border-radius: 16px;
+                        border: 1px solid #ffc107;
+                        background-color: #fff8e1;
+                        color: #856404;
+                        font-size: 12px;
+                        cursor: pointer;">
+                <span style="
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        margin-right: 8px;
+                        background-color: #ffc107;">
+                </span>
+                Em andamento
+            </button>
+        
+            <button class="filter-button"
+                    onclick="filterTable('concluida', this)" 
+                    style="
+                        display: inline-flex;
+                        align-items: center;
+                        padding: 8px 16px;
+                        border-radius: 16px;
+                        border: 1px solid #28a745;
+                        background-color: #f0fdf4;
+                        color: #155724;
+                        font-size: 12px;
+                        cursor: pointer;">
+                <span style="
+                        display: inline-block;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        margin-right: 8px;
+                        background-color: #28a745;">
+                </span>
+                Concluído
+            </button>
+        
+            <button class="filter-button"
+                    onclick="filterTable('', this)" 
                     style="
                         display: inline-flex;
                         align-items: center;
@@ -154,8 +162,7 @@
                         background-color: #f8f9fa;
                         color: #6c757d;
                         font-size: 12px;
-                        cursor: pointer;
-                        font-weight: bold;">
+                        cursor: pointer;">
                 <span style="
                         display: inline-block;
                         width: 10px;
@@ -167,6 +174,7 @@
                 Todos
             </button>
         </div>
+        
 
         <div class="tabela-painel-controle p-1" style="max-height: 50vh; overflow-y: auto;">
             <table class="table table-hover" id="data-table">
@@ -337,16 +345,13 @@
 
 {% block scripts %}
 
-
 <script>
-
     /**
      * Função para carregar dinamicamente os dados da tabela com paginação e filtros.
      * Utiliza requisições AJAX para evitar o recarregamento completo da página.
      *
      * @param {string} url - URL para carregar os dados (inclui parâmetros GET).
-    */
-
+     */
     function loadTableData(url) {
         fetch(url)
             .then(response => response.json())
@@ -354,11 +359,12 @@
                 const tbody = document.querySelector('#data-table tbody');
                 tbody.innerHTML = ''; // Limpa a tabela existente
 
-                // Adiciona os novos dados
+                // Adiciona as novas linhas
                 data.servicos.forEach(servico => {
                     const row = `
                         <tr id="servico-${servico.id}"
                             style="font-size: 12px; text-align: center; border-bottom: 3px solid var(--cinza-claro); cursor: pointer;"
+                            data-status="${servico.status.toLowerCase()}"
                             data-id="${servico.id}"
                             onclick="openServiceModal(this)">
                             <td style="padding: 0.75rem;">${servico.ordem_servico__cliente__nome.toUpperCase()}</td>
@@ -371,9 +377,27 @@
                                     align-items: center;
                                     padding: 4px 8px;
                                     border-radius: 16px;
-                                    border: 1px solid ${servico.status.toLowerCase() === 'concluída' ? '#28a745' : servico.status.toLowerCase() === 'em andamento' ? '#ffc107' : '#dc3545'};
-                                    background-color: ${servico.status.toLowerCase() === 'concluída' ? '#f0fdf4' : servico.status.toLowerCase() === 'em andamento' ? '#fff8e1' : '#fde2e4'};
-                                    color: ${servico.status.toLowerCase() === 'concluída' ? '#155724' : servico.status.toLowerCase() === 'em andamento' ? '#856404' : '#721c24'};
+                                    border: 1px solid ${
+                                        servico.status === 'concluida'
+                                            ? '#28a745'
+                                            : servico.status === 'em_andamento'
+                                            ? '#ffc107'
+                                            : '#dc3545'
+                                    };
+                                    background-color: ${
+                                        servico.status === 'concluida'
+                                            ? '#f0fdf4'
+                                            : servico.status === 'em_andamento'
+                                            ? '#fff8e1'
+                                            : '#fde2e4'
+                                    };
+                                    color: ${
+                                        servico.status === 'concluida'
+                                            ? '#155724'
+                                            : servico.status === 'em_andamento'
+                                            ? '#856404'
+                                            : '#721c24'
+                                    };
                                 ">
                                     <span style="
                                         display: inline-block;
@@ -381,10 +405,15 @@
                                         height: 10px;
                                         border-radius: 50%;
                                         margin-right: 8px;
-                                        background-color: ${servico.status.toLowerCase() === 'concluída' ? '#28a745' : servico.status.toLowerCase() === 'em andamento' ? '#ffc107' : '#dc3545'};
-                                    ">
-                                    </span>
-                                    ${servico.status.toUpperCase()}
+                                        background-color: ${
+                                            servico.status === 'concluida'
+                                                ? '#28a745'
+                                                : servico.status === 'em_andamento'
+                                                ? '#ffc107'
+                                                : '#dc3545'
+                                        };
+                                    "></span>
+                                    ${servico.status.replace(/_/g, ' ').toUpperCase()}
                                 </span>
                             </td>
                         </tr>
@@ -408,22 +437,31 @@
             })
             .catch(error => console.error('Erro ao carregar os dados:', error));
     }
-
-
 </script>
+
 
 <script>
 
     /**
-     * Função para filtrar os dados da tabela com base em status e busca por nome.
+     * Filtra os dados da tabela com base no status e na busca.
      * Constrói a URL apropriada e chama a função de carregamento.
      *
-     * @param {string} status - Status para filtrar (opcional, ex.: "concluída", "em andamento").
+     * @param {string} status - Status para filtrar (opcional).
+     * @param {HTMLElement} button - Botão clicado para destacar.
     */
-
-    function filterTable(status = '') {
+    function filterTable(status = '', button = null) {
         const search = document.getElementById('search-input').value; // Obtém o valor do campo de busca
-        const url = `/painel/dados/?search=${encodeURIComponent(search)}&status=${status}`;
+
+        // Atualiza os estilos dos botões
+        document.querySelectorAll('.filter-button').forEach(btn => {
+            btn.classList.remove('active-filter'); // Remove a classe ativa de todos os botões
+        });
+
+        if (button) {
+            button.classList.add('active-filter'); // Adiciona a classe ativa ao botão clicado
+        }
+
+        const url = `/painel/dados/?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`;
         loadTableData(url); // Carrega os dados filtrados
     }
 

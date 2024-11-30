@@ -1,13 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import now
 from django.utils.dateparse import parse_datetime
 
-from ordemServico.models import Servico, Profile
+from ordemServico.models import Servico, Profile, Tarefa
 
 from ordemServico.forms import ServicoUpdateForm, TarefaForm
 
@@ -24,6 +24,11 @@ def verificar_tipo_usuario(user):
 @user_passes_test(verificar_tipo_usuario)
 @login_required
 def lista_servicos(request):
+    # Captura os filtros enviados pelo front-end
+    pesquisa = request.GET.get('pesquisa', '').strip().lower()
+    status = request.GET.get('status', '').strip()
+    colaborador_id = request.GET.get('colaborador', '').strip()
+
     # Ordena os serviços: "em espera" primeiro
     servicos = Servico.objects.annotate(
         prioridade=Case(
@@ -35,11 +40,30 @@ def lista_servicos(request):
         )
     ).order_by('prioridade', 'status')
 
+    # Aplicar filtros conforme enviados
+    if pesquisa:
+        servicos = servicos.filter(
+            Q(ordem_servico__cliente__nome__icontains=pesquisa) |
+            Q(repositorio__nome__icontains=pesquisa)
+        )
+
+    # Verifica se o status foi enviado e aplica o filtro somente se não for "todos"
+    if status:
+        if status != 'todos':
+            servicos = servicos.filter(status=status)
+
+    if colaborador_id:
+        servicos = servicos.filter(tarefas__profile_id=colaborador_id)
+
     # Paginação: 20 serviços por página
     paginator = Paginator(servicos, 20)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
+    # Perfis para filtro de colaboradores (excluindo administrativos)
+    profiles = Profile.objects.select_related('user').exclude(role=2).order_by('user__username')
+
+    # Resposta AJAX para carregamento dinâmico
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         data = [
             {
@@ -71,6 +95,7 @@ def lista_servicos(request):
                 },
                 "tarefas": [
                     {
+                        "id": tarefa.id,
                         "profile": str(tarefa.profile),
                         "descricao": tarefa.descricao,
                         "status": tarefa.get_status_display(),
@@ -91,7 +116,12 @@ def lista_servicos(request):
             "total_pages": paginator.num_pages,
         })
 
-    return render(request, "ordemServico/area_tecnica/servicos.html")
+    # Renderizar página padrão para requisições não-AJAX
+    return render(
+        request,
+        "ordemServico/area_tecnica/servicos.html",
+        {"profiles": profiles}
+    )
 
 
 @login_required
@@ -113,7 +143,6 @@ def atualizar_status_servico(request, servico_id):
         return JsonResponse({"success": False, "errors": form.errors.as_json()}, status=400)
 
     return JsonResponse({"success": False, "message": "Método inválido."}, status=405)
-
 
 
 @login_required
@@ -153,3 +182,12 @@ def adicionar_tarefa(request, servico_id):
         "success": False,
         "message": "Método inválido."
     }, status=405)
+
+
+@csrf_exempt
+def excluir_tarefa(request, tarefa_id):
+    if request.method == 'DELETE':
+        tarefa = get_object_or_404(Tarefa, id=tarefa_id)
+        tarefa.delete()
+        return JsonResponse({'message': 'Tarefa excluída com sucesso.'}, status=200)
+    return JsonResponse({'error': 'Método não permitido.'}, status=405)

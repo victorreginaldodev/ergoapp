@@ -9,18 +9,13 @@ class OsRapidaUpdateForm(forms.ModelForm):
         fields = ['status', 'data_inicio', 'data_termino']
         widgets = {
             'status': Select(attrs={
-                'class': 'form-select', 
-                'class': 'form-control w-100',
-            }),
-            'data_inicio': DateInput(attrs={
-                'type': 'date',
-                'class': 'form-control', 
-                'class': 'form-control w-100'
+                'class': 'form-select w-100', 
+                'style': 'font-size: 12px; color: var(--cinza)'
             }),
             'data_termino': DateInput(attrs={
                 'type': 'date',
-                'class': 'form-control', 
-                'class': 'form-control w-100'
+                'class': 'form-control w-100',
+                'style': 'font-size: 12px; color: var(--cinza)'
             }),
         } 
 

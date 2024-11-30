@@ -7,7 +7,7 @@ class Tarefa(models.Model):
     
     STATUS = (
         ('nao_iniciada', 'NÃO INICIADA'),
-        ('em_andamento', 'EM ENDAMENTO'),
+        ('em_andamento', 'EM ANDAMENTO'),
         ('concluida', 'CONCLUÍDA'),
     )
 

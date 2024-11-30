@@ -28,6 +28,63 @@
         border-bottom: 1px solid var(--cinza);
     }
 
+    .notificacao {
+        padding: 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        color: white;
+        animation: fadeIn 0.3s forwards, fadeOut 1s 9s; /* Ajustado para 9s de delay antes do fadeOut */
+        opacity: 0;
+        position: relative;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .notificacao.sucesso {
+        background-color: #388e3c;
+    }
+
+    .notificacao.erro {
+        background-color: #d32f2f;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+        gap: 1rem;
+    }
+
+    .button {
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #0056b3;
+    }
+
+    .pagination-info {
+        font-size: 1rem;
+        color: #555;
+    }
+
 </style>
 {% endblock %}
 
@@ -37,7 +94,55 @@
         <i class="bi bi-person-gear" style="margin-right: 4px;"></i>
         Serviços
     </h3>
+    <div id="filtros-container" class="row" style="display: flex; align-items: center; margin-bottom: 0.5rem;">
 
+        <!-- Campo de Pesquisa -->
+        <div class="col-6">
+            <label for="pesquisa" style="display: block; font-weight: 400; font-size: 0.875rem; color: var(--cinza); margin-bottom: 0.5rem;">
+                Pesquisar pelo nome da empresa ou serviço
+            </label>
+            <input 
+                type="text" 
+                id="pesquisa" 
+                placeholder="Digite para pesquisar..." 
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d1d1d1; border-radius: 8px; font-size: 1rem; outline: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); background-color: #F4F4F4;"
+            >
+        </div>
+
+        <!-- Filtro de Status -->
+        <div class="col-3">
+            <label for="status" style="display: block; font-weight: 400; font-size: 0.875rem; color: var(--cinza); margin-bottom: 0.5rem;">
+                Pesquisar por status
+            </label>
+            <select 
+                id="status" 
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d1d1d1; border-radius: 8px; font-size: 1rem; outline: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); color: var(--cinza);"
+            >
+                <option value="todos">Todos</option>
+                <option value="em_espera">Em espera</option>
+                <option value="em_andamento">Em andamento</option>
+                <option value="concluida">Concluídos</option>
+            </select>
+        </div>
+    
+        <!-- Filtro de colaboradores -->
+        <div class="col-3">
+            <label for="colaborador-filter" style="display: block; font-weight: 400; font-size: 0.875rem; color: var(--cinza); margin-bottom: 0.5rem;">
+                Pesquisar por colaborador
+            </label>
+            <select 
+                id="colaborador-filter" 
+                name="colaborador-filter"  
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d1d1d1; border-radius: 8px; font-size: 1rem; outline: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); color: var(--cinza);"
+            >
+                <option value="">Selecione...</option>
+                {% for profile in profiles %}
+                    <option value="{{ profile.id }}">{{ profile.user.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div> 
+       
     <div id="servicos-container"></div>
 
     <!-- Controles de Paginação -->
@@ -46,6 +151,18 @@
             <!-- Os botões de navegação serão gerados dinamicamente -->
         </ul>
     </nav>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal-confirmacao" class="modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 1.5rem; border-radius: 8px; width: 300px; text-align: center; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+            <p id="modal-text" style="margin-bottom: 1rem; font-size: 1rem;">Tem certeza que deseja excluir esta tarefa?</p>
+            <button id="confirmar-exclusao" style="padding: 0.5rem 1rem; background-color: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer;">Confirmar</button>
+            <button id="cancelar-exclusao" style="padding: 0.5rem 1rem; background-color: #616161; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 0.5rem;">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Contêiner para Notificações -->
+    <div id="notificacoes" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
 
 </div>
 
@@ -57,11 +174,28 @@
     document.addEventListener('DOMContentLoaded', () => {
         const servicosContainer = document.getElementById('servicos-container');
         const paginationControls = document.getElementById('pagination-controls');
+        const pesquisaInput = document.getElementById('pesquisa');
+        const statusSelect = document.getElementById('status');
+        const colaboradorSelect = document.getElementById('colaborador-filter');
 
-        // Função para carregar serviços de uma página específica
+        // Armazena os filtros ativos
+        const filtrosAtivos = {
+            pesquisa: '',
+            status: '',
+            colaborador: '',
+        };
+
+        // Função para carregar serviços com filtros e paginação
         async function carregarServicos(page = 1) {
             try {
-                const response = await fetch(`?page=${page}`, {
+                const params = new URLSearchParams({
+                    page,
+                    pesquisa: filtrosAtivos.pesquisa,
+                    status: filtrosAtivos.status,
+                    colaborador: filtrosAtivos.colaborador,
+                });
+
+                const response = await fetch(`?${params.toString()}`, {
                     headers: { "X-Requested-With": "XMLHttpRequest" },
                 });
 
@@ -231,7 +365,8 @@
                                                     <th class="text-center align-middle" style="border-bottom: 1px solid var(--cinza); border-right: 1px solid var(--cinza); width: 30%; color: var(--cinza); font-size: 12px">Colaborador</th>
                                                     <th class="text-center align-middle" style="border-bottom: 1px solid var(--cinza); border-right: 1px solid var(--cinza); width: 40%; color: var(--cinza); font-size: 12px">Descrição</th>
                                                     <th class="text-center align-middle" style="border-bottom: 1px solid var(--cinza); border-right: 1px solid var(--cinza); width: 15%; color: var(--cinza); font-size: 12px">Status</th>
-                                                    <th class="text-center align-middle" style="border-bottom: 1px solid var(--cinza); width: 15%; color: var(--cinza); font-size: 12px">Data de Conclusão</th>
+                                                    <th class="text-center align-middle" style="border-bottom: 1px solid var(--cinza); width: 15%; color: var(--cinza); font-size: 12px; border-right: 1px solid var(--cinza)">Data de Conclusão</th>
+                                                    <th class="text-center align-middle" style="border-bottom: 1px solid var(--cinza); width: 15%; color: var(--cinza); font-size: 12px">Excluir</th>
                                                 </tr>
                                                 ${servico.tarefas.map(tarefa => `
                                                     <tr>
@@ -239,6 +374,15 @@
                                                         <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${tarefa.descricao || "Sem descrição"}</td>
                                                         <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${tarefa.status}</td>
                                                         <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${tarefa.data_conclusao}</td>
+                                                        <td class="text-center align-middle" style="border-bottom: 1px solid var(--cinza-claro);">
+                                                            <button 
+                                                                class="btn-excluir-tarefa" 
+                                                                data-tarefa-id="${tarefa.id}" 
+                                                                style="padding: 0.5rem; background-color: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
+                                                            >
+                                                                Excluir
+                                                            </button>
+                                                        </td>
                                                     </tr>
                                                 `).join('')}
                                             </table>
@@ -291,32 +435,43 @@
                 });
 
                 // Renderiza os controles de paginação
-                paginationControls.innerHTML = '';
+                paginationControls.innerHTML = ''; // Limpa os controles existentes
+
+                paginationControls.className = 'pagination d-flex justify-content-center align-items-center mt-3'; // Adiciona classes ao contêiner
+
                 if (data.has_previous) {
                     paginationControls.insertAdjacentHTML('beforeend', `
-                        <li class="page-item">
-                            <a class="page-link" href="#" data-page="${data.previous_page_number}">&laquo;</a>
-                        </li>
+                        <button 
+                            class="button btn-prev" 
+                            data-page="${data.previous_page_number}" 
+                            style="padding: 0.5rem 1rem; margin: 0 0.5rem; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Anterior
+                        </button>
                     `);
                 }
+
                 paginationControls.insertAdjacentHTML('beforeend', `
-                    <li class="page-item active">
-                        <span class="page-link">Página ${data.current_page} de ${data.total_pages}</span>
-                    </li>
+                    <span class="pagination-info" style="margin: 0 1rem; font-size: 1rem; color: #555;">
+                        Página ${data.current_page} de ${data.total_pages}
+                    </span>
                 `);
+
                 if (data.has_next) {
                     paginationControls.insertAdjacentHTML('beforeend', `
-                        <li class="page-item">
-                            <a class="page-link" href="#" data-page="${data.next_page_number}">&raquo;</a>
-                        </li>
+                        <button 
+                            class="button btn-next" 
+                            data-page="${data.next_page_number}" 
+                            style="padding: 0.5rem 1rem; margin: 0 0.5rem; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            Próxima
+                        </button>
                     `);
                 }
 
                 // Adiciona eventos aos botões de paginação
-                document.querySelectorAll('#pagination-controls a.page-link').forEach(link => {
-                    link.addEventListener('click', event => {
+                document.querySelectorAll('#pagination-controls button').forEach(button => {
+                    button.addEventListener('click', event => {
                         event.preventDefault();
-                        const page = link.getAttribute('data-page');
+                        const page = button.getAttribute('data-page');
                         carregarServicos(page);
                     });
                 });
@@ -324,6 +479,25 @@
                 console.error('Erro ao carregar serviços:', error);
             }
         }
+
+       // Atualiza filtros e recarrega serviços
+       function atualizarFiltros(chave, valor) {
+            filtrosAtivos[chave] = valor;
+            carregarServicos();
+        }
+
+        // Eventos para os filtros
+        pesquisaInput.addEventListener('input', (event) => {
+            atualizarFiltros('pesquisa', event.target.value);
+        });
+
+        statusSelect.addEventListener('change', (event) => {
+            atualizarFiltros('status', event.target.value);
+        });
+
+        colaboradorSelect.addEventListener('change', (event) => {
+            atualizarFiltros('colaborador', event.target.value);
+        });
 
         // Função para truncar texto
         function truncateText(text, limit) {
@@ -506,10 +680,19 @@
                         if (tabela) {
                             tabela.insertAdjacentHTML('beforeend', `
                                 <tr id="tarefa-${data.tarefa.id}">
-                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza)">${data.tarefa.profile}</td>
-                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza)">${data.tarefa.descricao || 'Sem descrição'}</td>
-                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza)">${data.tarefa.status}</td>
-                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza)">${data.tarefa.data_termino || 'Não concluída'}</td>
+                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${data.tarefa.profile}</td>
+                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${data.tarefa.descricao || 'Sem descrição'}</td>
+                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${data.tarefa.status}</td>
+                                    <td class="text-center align-middle" style="color: var(--cinza); font-size: 12px; border-bottom: 1px solid var(--cinza-claro)">${data.tarefa.data_termino || 'Não concluída'}</td>
+                                    <td class="text-center align-middle" style="border-bottom: 1px solid var(--cinza-claro);">
+                                        <button 
+                                            class="btn-excluir-tarefa" 
+                                            data-tarefa-id="${data.tarefa.id}" 
+                                            style="padding: 0.5rem; background-color: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
+                                            >
+                                                Excluir
+                                            </button>
+                                    </td>
                                 </tr>
                             `);
                         } else {
@@ -527,6 +710,87 @@
                 }
             }
         });
+    });
+
+</script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalConfirmacao = document.getElementById('modal-confirmacao');
+        const confirmarExclusaoBtn = document.getElementById('confirmar-exclusao');
+        const cancelarExclusaoBtn = document.getElementById('cancelar-exclusao');
+        const notificacoesContainer = document.getElementById('notificacoes');
+        let tarefaIdParaExcluir = null;
+        let linhaTarefaParaExcluir = null;
+
+        // Função para mostrar o modal
+        function mostrarModal(tarefaId, linhaTarefa) {
+            tarefaIdParaExcluir = tarefaId;
+            linhaTarefaParaExcluir = linhaTarefa;
+            modalConfirmacao.style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function fecharModal() {
+            modalConfirmacao.style.display = 'none';
+            tarefaIdParaExcluir = null;
+            linhaTarefaParaExcluir = null;
+        }
+
+        // Função para mostrar notificações
+        function mostrarNotificacao(mensagem, tipo = 'sucesso') {
+            const notificacao = document.createElement('div');
+            notificacao.className = `notificacao ${tipo}`;
+            notificacao.textContent = mensagem;
+
+            notificacoesContainer.appendChild(notificacao);
+
+            // Remove a notificação após 5 segundos (tempo total de exibição + animação de saída)
+            setTimeout(() => {
+                notificacao.remove();
+            }, 5000);
+        }
+
+        // Evento de clique no botão de exclusão
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('btn-excluir-tarefa')) {
+                const tarefaId = event.target.getAttribute('data-tarefa-id');
+                const linhaTarefa = event.target.closest('tr');
+                mostrarModal(tarefaId, linhaTarefa);
+            }
+        });
+
+        // Confirmar exclusão
+        confirmarExclusaoBtn.addEventListener('click', async () => {
+            if (!tarefaIdParaExcluir || !linhaTarefaParaExcluir) return;
+
+            try {
+                const response = await fetch(`/tarefas/${tarefaIdParaExcluir}/excluir/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                });
+
+                if (response.ok) {
+                    linhaTarefaParaExcluir.remove();
+                    mostrarNotificacao('Tarefa excluída com sucesso!', 'sucesso');
+                } else {
+                    mostrarNotificacao('Erro ao excluir a tarefa. Tente novamente.', 'erro');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir tarefa:', error);
+                mostrarNotificacao('Erro ao excluir a tarefa. Tente novamente.', 'erro');
+            }
+
+            fecharModal();
+        });
+
+        // Cancelar exclusão
+        cancelarExclusaoBtn.addEventListener('click', fecharModal);
     });
 
 </script>

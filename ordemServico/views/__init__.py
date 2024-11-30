@@ -2,9 +2,9 @@ from .FinanceiroView import *
 from .area_tecnica.ServicosView import *
 from .LoginView import *
 from .OrdemServicoView import *
-from .OsRapidaView import *
+from .area_tecnica.OsRapidaView import *
 from .RegistroView import *
-from .TecnicoView import *
+from .area_tecnica.TarefasView import *
 from .ClientesView import *
 from .RepositorioView import *
 from .UsuarioView import *

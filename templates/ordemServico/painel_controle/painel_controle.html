@@ -38,7 +38,71 @@
         background-color: #e6e6e6; /* Opção: muda o fundo */
     }
 
+    .podium-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
+    .podium-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilo para cada posição */
+    .podium-item.gold {
+        background-color: #ffd700; /* Ouro */
+        color: #ffffff;
+        border: 1px solid #e6b800;
+    }
+
+    .podium-item.silver {
+        background-color: #c0c0c0; /* Prata */
+        color: #ffffff;
+        border: 1px solid #a8a8a8;
+    }
+
+    .podium-item.bronze {
+        background-color: #cd7f32; /* Bronze */
+        color: #ffffff;
+        border: 1px solid #a56722;
+    }
+
+    .podium-item:not(.gold):not(.silver):not(.bronze) {
+        background-color: #f7f7f7;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+    /* Ícones */
+    .podium-icon {
+        font-size: 18px;
+        margin-right: 10px;
+    }
+
+    /* Nome do cliente */
+    .client-name {
+        flex: 1;
+        text-align: left;
+        margin-left: 10px;
+        font-weight: normal;
+        color: inherit;
+    }
+
+    /* Valor */
+    .valor-faturamento {
+        font-size: 14px;
+        font-weight: bold;
+        color: inherit;
+    }
 
 </style>
 {% endblock %}
@@ -52,483 +116,66 @@
             Painel de controle
         </h3>
 
-        <!-- Gráfico 1: Quantidade de serviços criados por mês -->
-        <div class="mb-4 P-3" style="width: 100%; height: 40vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--cinza-claro); border-radius: 12px;">
-            <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem;">GRÁFICO DE SERVIÇOS CRIADOS POR MÊS</h4>
-            <canvas id="graficoServicosPorMes" style="max-width: 90%; max-height: 90%;"></canvas>
-        </div>
+        <div class="mb-4"
+            style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 40vh;">
 
-        <!-- Container para os gráficos de status e vendas -->
-        <div class="mb-4" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 40vh;">
-            <!-- Gráfico 2: Quantidade de serviços por status -->
-            <div style="width: 30%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--cinza-claro); border-radius: 12px;">
-                <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem;">GRÁFICO DE STATUS DOS SERVIÇOS</h4>
-                <canvas id="graficoServicosPorStatus" style="max-width: 90%; max-height: 90%;"></canvas>
-            </div>
-
-            <!-- Gráfico 3: Valor de vendas por mês -->
-            <div style="width: 68%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--cinza-claro); border-radius: 12px;">
-                <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem;">GRÁFICO DE VENDAS MENSAIS</h4>
+            <!-- Valor de vendas por mês -->
+            <div style="width: 59%; height: 40vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #F9F9F9; border-radius: 12px;">
+                <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem;">Vendas dos últimos 6 meses</h4>
                 <canvas id="graficoVendasPorMes" style="max-width: 90%; max-height: 90%;"></canvas>
             </div>
-        </div>
 
-        <h6 style="color: #78828B; font-weight: 400; font-size: 14px;" class="mb-2">
-            Histórico de serviços:
-        </h6>
-
-        <div style="display: flex; align-items: center; gap: 10px;" class="mb-1">
-            <!-- Campo de Pesquisa -->
-            <input type="text" id="search-input" class="form-control w-50" placeholder="Pesquisar..." style="padding: 0.5rem; font-size: 14px; background-color: var(--cinza-claro);">
-        
-            <!-- Botões de Filtro -->
-            <button class="filter-button"
-                    onclick="filterTable('em_espera', this)" 
-                    style="
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 8px 16px;
-                        border-radius: 16px;
-                        border: 1px solid #dc3545;
-                        background-color: #fde2e4;
-                        color: #721c24;
-                        font-size: 12px;
-                        cursor: pointer;">
-                <span style="
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                        background-color: #dc3545;">
-                </span>
-                Em espera
-            </button>
-        
-            <button class="filter-button"
-                    onclick="filterTable('em_andamento', this)" 
-                    style="
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 8px 16px;
-                        border-radius: 16px;
-                        border: 1px solid #ffc107;
-                        background-color: #fff8e1;
-                        color: #856404;
-                        font-size: 12px;
-                        cursor: pointer;">
-                <span style="
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                        background-color: #ffc107;">
-                </span>
-                Em andamento
-            </button>
-        
-            <button class="filter-button"
-                    onclick="filterTable('concluida', this)" 
-                    style="
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 8px 16px;
-                        border-radius: 16px;
-                        border: 1px solid #28a745;
-                        background-color: #f0fdf4;
-                        color: #155724;
-                        font-size: 12px;
-                        cursor: pointer;">
-                <span style="
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                        background-color: #28a745;">
-                </span>
-                Concluído
-            </button>
-        
-            <button class="filter-button"
-                    onclick="filterTable('', this)" 
-                    style="
-                        display: inline-flex;
-                        align-items: center;
-                        padding: 8px 16px;
-                        border-radius: 16px;
-                        border: 1px solid #6c757d;
-                        background-color: #f8f9fa;
-                        color: #6c757d;
-                        font-size: 12px;
-                        cursor: pointer;">
-                <span style="
-                        display: inline-block;
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        margin-right: 8px;
-                        background-color: #6c757d;">
-                </span>
-                Todos
-            </button>
-        </div>
-        
-
-        <div class="tabela-painel-controle p-1" style="max-height: 50vh; overflow-y: auto;">
-            <table class="table table-hover" id="data-table">
-                <thead>
-                    <tr style="font-size: 12px; text-align: center;">
-                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem; border-top-left-radius: 12px; border-bottom-left-radius: 12px;">CLIENTE</th>
-                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem;">SERVIÇO</th>
-                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem;">RECEBIMENTO</th>
-                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem;">CONCLUSÃO</th>
-                        <th scope="col" style="background-color: var(--azul-principal); color: var(--cinza-claro); padding: 0.75rem; border-top-right-radius: 12px; border-bottom-right-radius: 12px;">STATUS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Renderiza os dados iniciais da primeira página -->
-                    {% for servico in page_obj %}
-                    <tr id="servico-{{ servico.id }}"
-                        style="font-size: 12px; text-align: center; border-bottom: 3px solid var(--cinza-claro); cursor: pointer;"
-                        data-status="{{ servico.get_status_display|lower }}"
-                        data-id="{{ servico.id }}"
-                        onclick="openServiceModal(this)">
-                        <td style="padding: 0.75rem;">{{ servico.ordem_servico.cliente.nome|truncatechars:40|upper }}</td>
-                        <td>{{ servico.repositorio.nome|truncatechars:20|upper }}</td>
-                        <td>{{ servico.ordem_servico.data_criacao|date:"d/m/Y" }}</td>
-                        <td>
-                            {% if servico.data_conclusao %}
-                            {{ servico.data_conclusao|date:"d/m/Y" }}
-                            {% else %}
-                            NÃO CONCLUÍDO
-                            {% endif %}
-                        </td>
-                        <td style="text-align: center;">
-                            <span style="
-                                display: inline-flex; 
-                                align-items: center; 
-                                padding: 4px 8px; 
-                                border-radius: 16px; 
-                                border: 1px solid 
-                                    {% if servico.get_status_display|lower == 'concluída' %}#28a745{% endif %}
-                                    {% if servico.get_status_display|lower == 'em andamento' %}#ffc107{% endif %}
-                                    {% if servico.get_status_display|lower == 'em espera' %}#dc3545{% endif %};
-                                background-color: 
-                                    {% if servico.get_status_display|lower == 'concluída' %}#f0fdf4{% endif %}
-                                    {% if servico.get_status_display|lower == 'em andamento' %}#fff8e1{% endif %}
-                                    {% if servico.get_status_display|lower == 'em espera' %}#fde2e4{% endif %};
-                                color: 
-                                    {% if servico.get_status_display|lower == 'concluída' %}#155724{% endif %}
-                                    {% if servico.get_status_display|lower == 'em andamento' %}#856404{% endif %}
-                                    {% if servico.get_status_display|lower == 'em espera' %}#721c24{% endif %};
-                            ">
-                                <span style="
-                                    display: inline-block; 
-                                    width: 10px; 
-                                    height: 10px; 
-                                    border-radius: 50%; 
-                                    margin-right: 8px; 
-                                    background-color: 
-                                        {% if servico.get_status_display|lower == 'concluída' %}#28a745{% endif %}
-                                        {% if servico.get_status_display|lower == 'em andamento' %}#ffc107{% endif %}
-                                        {% if servico.get_status_display|lower == 'em espera' %}#dc3545{% endif %};
-                                ">
+            <div style="width: 39%; height: 40vh; display: flex; flex-direction: column; background-color: #F9F9F9; border-radius: 12px;">
+                <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem; text-align: center;">Top clientes vendas do mês</h4>
+                <div class="px-5 py-2">
+                    <ol class="podium-list">
+                        {% for comprador in top_compradores %}
+                            <li class="podium-item {% if forloop.counter == 1 %}gold{% elif forloop.counter == 2 %}silver{% elif forloop.counter == 3 %}bronze{% endif %}"
+                                style="font-size: 12px; padding: 0.9rem; color: var(--cinza);">
+                                <span class="podium-icon">
+                                    {% if forloop.counter == 1 %}
+                                        🥇
+                                    {% elif forloop.counter == 2 %}
+                                        🥈
+                                    {% elif forloop.counter == 3 %}
+                                        🥉
+                                    {% endif %}
                                 </span>
-                                {{ servico.get_status_display|upper }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                                <strong>Top {{ forloop.counter }}:</strong> 
+                                <span class="client-name">{{ comprador.cliente__nome|title|truncatechars:40 }}</span> 
+                                <span class="valor-faturamento" data-valor="{{ comprador.total_faturamento|floatformat:2 }}">
+                                    R$ {{ comprador.total_faturamento|floatformat:2 }}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
         </div>
-        
-        <!-- Controles de Paginação -->
-        <div class="pagination d-flex justify-content-center align-items-center mt-3">
-            {% if page_obj.has_previous %}
-                <button class="button" onclick="loadTableData('/painel/dados/?page={{ page_obj.previous_page_number }}')">Anterior</button>
-            {% endif %}
-            <span class="mx-3">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-            {% if page_obj.has_next %}
-                <button class="button" onclick="loadTableData('/painel/dados/?page={{ page_obj.next_page_number }}')">Próxima</button>
-            {% endif %}
+
+        <div class="mb-4"
+            style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 40vh;">
+
+            <!-- Quantidade de serviços criados por mês -->
+            <div class="mb-4 P-3 mt-4" style="width: 59%; height: 40vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #F9F9F9; border-radius: 12px;">
+                <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem;">Quantidade de serviços dos útimos 6 meses</h4>
+                <canvas id="graficoServicosPorMes" style="max-width: 90%; max-height: 90%;"></canvas>
+            </div>
+
+            <!-- Quantidade de serviços por status -->
+            <div style="width: 39%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: #F9F9F9; border-radius: 12px;">
+                <h4 style="color: var(--cinza); font-weight: 500; padding: 1rem;">Status dos serviços</h4>
+                <canvas id="graficoServicosPorStatus" style="max-width: 80%; max-height: 80%;"></canvas>
+            </div>
+
         </div>
            
-    </div>
-</div>
-
-<!-- Modal completa no template painel_controle.html -->
-<div class="modal fade" id="serviceDetailsModal" tabindex="-1" aria-labelledby="serviceDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" style="max-width: 90%;">
-        <div class="modal-content">
-            <!-- Cabeçalho da Modal -->
-            <div class="modal-header p-3">
-                <h5 class="modal-title" id="serviceDetailsModalLabel" style="color: var(--cinza); font-weight: 600;">Detalhes do Serviço</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            
-            <!-- Corpo da Modal -->
-            <div class="modal-body p-3" id="serviceDetailsContent">
-                <!-- Campos para dados do serviço -->
-                <div class="row">
-                    <div class="col-4">
-                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Cliente:</strong>
-                        <p id="cliente-nome" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
-                    </div>
-                    <div class="col-4">
-                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Serviço:</strong>
-                        <p id="servico-nome" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="col-2">
-                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Data de Recebimento:</strong>
-                        <p id="data-recebimento" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
-                    </div>
-                    <div class="col-2">
-                        <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Data de Conclusão:</strong>
-                        <p id="data-conclusao" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
-                    </div>
-                    <div class="col-2">
-                        <!-- Coloque o texto Status acima -->
-                        <strong 
-                            style="
-                                color: var(--cinza); 
-                                font-weight: 500; 
-                                font-size: 14px !important; 
-                                display: block; /* Garante que fique em uma nova linha */
-                                margin-bottom: 4px; /* Espaçamento entre o texto Status e o conteúdo */
-                            ">
-                            Status:
-                        </strong>
-                        <!-- Coloque o conteúdo abaixo -->
-                        <span id="status" style="
-                            display: inline-flex;
-                            align-items: center;
-                            padding: 4px 8px;
-                            border-radius: 16px;
-                            font-weight: bold;
-                            border: 1px solid transparent;
-                            background-color: #f8f9fa; /* Cor padrão */
-                            color: #6c757d; /* Cor padrão */
-                            font-size: 12px; /* Garante o tamanho do texto principal */
-                        ">
-                            <span id="status-indicator" style="
-                                display: inline-block;
-                                width: 10px;
-                                height: 10px;
-                                border-radius: 50%;
-                                margin-right: 8px;
-                                background-color: #6c757d; /* Cor padrão */
-                            "></span>
-                            <span id="status-text" style="font-size: 12px;">Carregando...</span>
-                        </span>
-                    </div>                 
-                </div>
-                <div class="mt-5">
-                    <strong style="color: var(--cinza); font-weight: 500; font-size: 14px !important;">Descrição:</strong>
-                    <p id="descricao" class="mt-1" style="color: #000; font-size: 12px;">Carregando...</p>
-                </div>
-            </div>            
-            
-            <!-- Rodapé da Modal -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
     </div>
 </div>
 
 {% endblock %}
 
 {% block scripts %}
-
-<script>
-    /**
-     * Função para carregar dinamicamente os dados da tabela com paginação e filtros.
-     * Utiliza requisições AJAX para evitar o recarregamento completo da página.
-     *
-     * @param {string} url - URL para carregar os dados (inclui parâmetros GET).
-     */
-    function loadTableData(url) {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.querySelector('#data-table tbody');
-                tbody.innerHTML = ''; // Limpa a tabela existente
-
-                // Adiciona as novas linhas
-                data.servicos.forEach(servico => {
-                    const row = `
-                        <tr id="servico-${servico.id}"
-                            style="font-size: 12px; text-align: center; border-bottom: 3px solid var(--cinza-claro); cursor: pointer;"
-                            data-status="${servico.status.toLowerCase()}"
-                            data-id="${servico.id}"
-                            onclick="openServiceModal(this)">
-                            <td style="padding: 0.75rem;">${servico.ordem_servico__cliente__nome.toUpperCase()}</td>
-                            <td>${servico.repositorio__nome.toUpperCase()}</td>
-                            <td>${new Date(servico.ordem_servico__data_criacao).toLocaleDateString('pt-BR')}</td>
-                            <td>${servico.data_conclusao ? new Date(servico.data_conclusao).toLocaleDateString('pt-BR') : 'NÃO CONCLUÍDO'}</td>
-                            <td style="text-align: center;">
-                                <span style="
-                                    display: inline-flex;
-                                    align-items: center;
-                                    padding: 4px 8px;
-                                    border-radius: 16px;
-                                    border: 1px solid ${
-                                        servico.status === 'concluida'
-                                            ? '#28a745'
-                                            : servico.status === 'em_andamento'
-                                            ? '#ffc107'
-                                            : '#dc3545'
-                                    };
-                                    background-color: ${
-                                        servico.status === 'concluida'
-                                            ? '#f0fdf4'
-                                            : servico.status === 'em_andamento'
-                                            ? '#fff8e1'
-                                            : '#fde2e4'
-                                    };
-                                    color: ${
-                                        servico.status === 'concluida'
-                                            ? '#155724'
-                                            : servico.status === 'em_andamento'
-                                            ? '#856404'
-                                            : '#721c24'
-                                    };
-                                ">
-                                    <span style="
-                                        display: inline-block;
-                                        width: 10px;
-                                        height: 10px;
-                                        border-radius: 50%;
-                                        margin-right: 8px;
-                                        background-color: ${
-                                            servico.status === 'concluida'
-                                                ? '#28a745'
-                                                : servico.status === 'em_andamento'
-                                                ? '#ffc107'
-                                                : '#dc3545'
-                                        };
-                                    "></span>
-                                    ${servico.status.replace(/_/g, ' ').toUpperCase()}
-                                </span>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.insertAdjacentHTML('beforeend', row);
-                });
-
-                // Atualiza os controles de paginação
-                const pagination = document.querySelector('.pagination');
-                pagination.innerHTML = ''; // Limpa os controles existentes
-
-                if (!data.filtro_aplicado) {
-                    if (data.has_previous) {
-                        pagination.innerHTML += `<button class="button" onclick="loadTableData('/painel/dados/?page=${data.previous_page}')">Anterior</button>`;
-                    }
-                    pagination.innerHTML += `<span class="mx-3">Página ${data.current_page} de ${data.total_pages}</span>`;
-                    if (data.has_next) {
-                        pagination.innerHTML += `<button class="button" onclick="loadTableData('/painel/dados/?page=${data.next_page}')">Próxima</button>`;
-                    }
-                }
-            })
-            .catch(error => console.error('Erro ao carregar os dados:', error));
-    }
-</script>
-
-
-<script>
-
-    /**
-     * Filtra os dados da tabela com base no status e na busca.
-     * Constrói a URL apropriada e chama a função de carregamento.
-     *
-     * @param {string} status - Status para filtrar (opcional).
-     * @param {HTMLElement} button - Botão clicado para destacar.
-    */
-    function filterTable(status = '', button = null) {
-        const search = document.getElementById('search-input').value; // Obtém o valor do campo de busca
-
-        // Atualiza os estilos dos botões
-        document.querySelectorAll('.filter-button').forEach(btn => {
-            btn.classList.remove('active-filter'); // Remove a classe ativa de todos os botões
-        });
-
-        if (button) {
-            button.classList.add('active-filter'); // Adiciona a classe ativa ao botão clicado
-        }
-
-        const url = `/painel/dados/?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}`;
-        loadTableData(url); // Carrega os dados filtrados
-    }
-
-    // Evento para ativar o filtro em tempo real enquanto o usuário digita no campo de busca
-    document.getElementById('search-input').addEventListener('keyup', () => filterTable());
-
-</script>
-
-<script>
-
-    /**
-     * Função para abrir a modal e carregar os detalhes do serviço.
-     * @param {HTMLElement} row - Linha da tabela que foi clicada.
-    */
-
-    function openServiceModal(row) {
-        const serviceId = row.getAttribute('data-id'); // Obtém o ID do serviço da linha
-        const modal = new bootstrap.Modal(document.getElementById('serviceDetailsModal')); // Inicializa a modal
-
-        // Faz uma requisição AJAX para buscar os detalhes do serviço
-        fetch(`/servico/${serviceId}/`)
-            .then(response => response.json())
-            .then(data => {
-                // Preenche os campos da modal com os dados do serviço
-                document.getElementById('cliente-nome').textContent = data.cliente || 'Não informado';
-                document.getElementById('servico-nome').textContent = data.servico || 'Não informado';
-                document.getElementById('data-recebimento').textContent = data.data_recebimento || 'Não informado';
-                document.getElementById('data-conclusao').textContent = data.data_conclusao || 'Não informado';
-                document.getElementById('descricao').textContent = data.descricao || 'Não informado';
-
-                // Atualiza o status com cores e texto apropriados
-                const statusSpan = document.getElementById('status');
-                const statusIndicator = document.getElementById('status-indicator');
-                const statusText = document.getElementById('status-text');
-
-                statusText.textContent = data.status || 'Desconhecido';
-
-                // Define cores para o status
-                if (data.status === 'Concluída') {
-                    statusSpan.style.backgroundColor = '#f0fdf4';
-                    statusSpan.style.color = '#155724';
-                    statusIndicator.style.backgroundColor = '#28a745';
-                } else if (data.status === 'Em andamento') {
-                    statusSpan.style.backgroundColor = '#fff8e1';
-                    statusSpan.style.color = '#856404';
-                    statusIndicator.style.backgroundColor = '#ffc107';
-                } else if (data.status === 'Em espera') {
-                    statusSpan.style.backgroundColor = '#fde2e4';
-                    statusSpan.style.color = '#721c24';
-                    statusIndicator.style.backgroundColor = '#dc3545';
-                } else {
-                    // Cor padrão para status desconhecido
-                    statusSpan.style.backgroundColor = '#f8f9fa';
-                    statusSpan.style.color = '#6c757d';
-                    statusIndicator.style.backgroundColor = '#6c757d';
-                }
-
-                // Abre a modal
-                modal.show();
-            })
-            .catch(error => {
-                console.error('Erro ao carregar os detalhes do serviço:', error);
-                alert('Não foi possível carregar os detalhes do serviço. Tente novamente.');
-            });
-    }
-
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -676,8 +323,8 @@
                     labels: labelsVendasPorMes,
                     datasets: [{
                         data: dataVendasPorMes,
-                        backgroundColor: gradient3,
-                        borderColor: '#2A6CB2',
+                        backgroundColor: '#FF7043',
+                        borderColor: '#FF7043',
                         borderWidth: 1
                     }]
                 },
@@ -698,9 +345,9 @@
                             }
                         },
                         datalabels: {
-                            color: '#fff',
-                            anchor: 'center',
-                            align: 'center',
+                            color: '#212121',
+                            anchor: 'end',
+                            align: 'end ',
                             formatter: (value) => value.toLocaleString('pt-BR', {
                                 style: 'currency',
                                 currency: 'BRL'
@@ -783,6 +430,29 @@
                 modalBody.innerHTML = `<p class="text-danger text-center">${error.message}</p>`;
             });
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Seleciona todos os elementos com a classe "valor-faturamento"
+        const elementos = document.querySelectorAll('.valor-faturamento');
+
+        elementos.forEach(el => {
+            // Obtém o valor bruto do atributo data-valor
+            const valorBruto = parseFloat(el.getAttribute('data-valor'));
+
+            if (!isNaN(valorBruto)) {
+                // Formata o valor no padrão brasileiro
+                const valorFormatado = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(valorBruto);
+
+                // Atualiza o conteúdo do elemento com o valor formatado
+                el.textContent = valorFormatado;
+            }
+        });
+    });
 </script>
     
 {% endblock %}

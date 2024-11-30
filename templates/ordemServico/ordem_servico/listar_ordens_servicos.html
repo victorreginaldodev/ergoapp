@@ -1,0 +1,43 @@
+{% extends 'ordemServico/base.html' %}
+{% load static %}
+{% block title %}Página em Desenvolvimento{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <div class="development-page">
+        <h1 class="title">🚧 Página em Desenvolvimento 🚧</h1>
+        <p class="subtitle">
+            Estamos trabalhando para trazer esta funcionalidade em breve. Por favor, aguarde!
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+/* Centraliza o conteúdo vertical e horizontalmente */
+.development-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+/* Estilos do título e subtítulo */
+.title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 40px;
+}
+
+</style>
+{% endblock %}

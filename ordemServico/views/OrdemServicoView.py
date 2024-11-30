@@ -17,6 +17,9 @@ def verificar_tipo_usuario(user):
     except Profile.DoesNotExist:
         return False
 
+def listar_ordens_servicos(request):
+    return render(request, 'ordemServico/ordem_servico/listar_ordens_servicos.html')
+
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 def criar_ordem_servico(request):

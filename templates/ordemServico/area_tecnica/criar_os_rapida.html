@@ -2,20 +2,26 @@
 {% load static %}
 {% block title %}Criar OS rápida{% endblock %}
 {% block content %}
-<div class="content page-title px-4">
+<div class="container page-title">
 
     <h3 class="titulo-pagina">
         <i class="fa-solid fa-pen-to-square"></i>
         Criar nova ordem de serviço rápida
     </h3>
 
-    <div class="alert alert-warning alert-dismissible fade show ms-4 me-5" role="alert" style="margin-top: -30px;">
+    <div
+        id="alerta-unico"
+        class="alert alert-warning alert-dismissible fade show"
+        role="alert"
+        style="position: fixed; top: 20px; right: 20px; z-index: 1050; max-width: 300px;"
+    >
         <strong style="font-weight: 700;">Atenção:</strong> Antes de iniciar a criação de uma OS Rápida, verifique se o cliente e todos os
         serviços já estão cadastrados. Se for necessário cadastrar serviços ou clientes durante a criação da OS rápida, você precisará recarregar a página e perderá todo o seu progresso.
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 
-    <form method="post" class="ms-4 me-5 mb-5">
+
+    <form method="post">
 
         {% csrf_token %}
 
@@ -65,8 +71,24 @@
             </div>
         </div>
 
-        <button class="btn btn-success ms-2" type="submit">Salvar</button>
+        <button class="botao ms-2" type="submit">Salvar</button>
     </form>
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const alerta = document.getElementById("alerta-unico");
+    if (alerta) {
+        setTimeout(() => {
+            alerta.classList.remove("show");
+            alerta.classList.add("fade");
+            setTimeout(() => alerta.remove(), 150); // Remove do DOM após animação
+        }, 5000); // 5 segundos
+    }
+});
+
+</script>
 {% endblock %}

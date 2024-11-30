@@ -12,11 +12,7 @@ urlpatterns = [
 
     path('', include('ordemServico.urls.ServicosUrls')),
 
-    path('', include('ordemServico.urls.DashboardServicosUrls')),
-
-    ####################################################################
-
-    path('', include('ordemServico.urls.TecnicoUrls')),
+    path('', include('ordemServico.urls.TarefasUrls')),
 
     path('', include('ordemServico.urls.OsRapidaUrls')),
 

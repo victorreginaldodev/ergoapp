@@ -31,10 +31,28 @@
         color: var(--cinza-escuro);
         /* Cor do texto */
     }
+
+    .d-flex {
+        display: flex;
+        justify-content: center; 
+        align-items: center;  
+        flex-wrap: wrap;  
+        gap: 3rem;
+    }
+
+    .col-md-4 {
+        max-width: 300px; 
+    }
+
+    .mx-2 {
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
 </style>
 {% endblock %}
 
-<div class="content page-title administrativo mb-5 px-5">
+<div class="container">
 
     <div id="alert-container"
         style=" position: fixed; top: 10px; right: 10px; z-index: 1055; width: 300px; display: none;"></div>
@@ -44,9 +62,9 @@
         Financeiro
     </h3>
 
-    <div class="row g-3 px-2 mb-4">
+    <div class="d-flex justify-content-center align-items-center mb-5 flex-wrap">
         <!-- Card: Total Faturadas -->
-        <div class="col-md-4">
+        <div class="col-md-4 mx-2">
             <div class="card"
                 style="background-color: #d4edda; color: green; border-radius: 8px; border: none; box-shadow: 4px 4px 8px var(--cinza);">
                 <div class="card-body text-center">
@@ -55,9 +73,9 @@
                 </div>
             </div>
         </div>
-
+    
         <!-- Card: Total Liberadas -->
-        <div class="col-md-4">
+        <div class="col-md-4 mx-2">
             <div class="card shadow-sm"
                 style="background-color: #fff3cd; color: #856404; border-radius: 8px; border: none; box-shadow: 4px 4px 8px var(--cinza);">
                 <div class="card-body text-center">
@@ -66,9 +84,9 @@
                 </div>
             </div>
         </div>
-
+    
         <!-- Card: Total Não Liberadas -->
-        <div class="col-md-4">
+        <div class="col-md-4 mx-2">
             <div class="card shadow-sm"
                 style="background-color: #f8d7da; color: red; border-radius: 8px; border: none; box-shadow: 4px 4px 8px var(--cinza);">
                 <div class="card-body text-center">
@@ -79,6 +97,7 @@
             </div>
         </div>
     </div>
+    
 
 
     <!-- Filtros -->

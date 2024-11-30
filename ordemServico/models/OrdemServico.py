@@ -1,7 +1,5 @@
 from django.db import models
 from .Cliente import Cliente
-from .Contato import Contato
-from .Profile import Profile
 
 class OrdemServico(models.Model):
 

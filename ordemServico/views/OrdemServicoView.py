@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import inlineformset_factory
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from ordemServico.forms import OrdemServicoForm, ServicoForm
 from ordemServico.models import OrdemServico, Servico, Profile
@@ -17,8 +18,23 @@ def verificar_tipo_usuario(user):
     except Profile.DoesNotExist:
         return False
 
+@user_passes_test(verificar_tipo_usuario)
+@login_required
 def listar_ordens_servicos(request):
-    return render(request, 'ordemServico/ordem_servico/listar_ordens_servicos.html')
+    # Ordena por data de criação (mais recente primeiro)
+    ordens_servicos = OrdemServico.objects.all().order_by('-data_criacao')
+    
+    # Quantidade de itens por página
+    itens_por_pagina = 10
+    paginator = Paginator(ordens_servicos, itens_por_pagina)
+    
+    # Obtém o número da página da requisição
+    pagina = request.GET.get('page')
+    ordens_paginadas = paginator.get_page(pagina)
+
+    return render(request, 'ordemServico/ordem_servico/listar_ordens_servicos.html', {
+        "ordens_servicos": ordens_paginadas
+    })
 
 @login_required
 @user_passes_test(verificar_tipo_usuario)
@@ -27,7 +43,9 @@ def criar_ordem_servico(request):
         OrdemServico,
         Servico,
         form=ServicoForm,
-        extra=1
+        fields='__all__',
+        extra=1,
+        can_delete=True
     )
 
     if request.method == 'POST':
@@ -67,4 +85,53 @@ def criar_ordem_servico(request):
             'ordem_servico_form': ordem_servico_form,
             'servico_formset': servico_formset,
         }
-        return render(request, 'ordemServico/ordem_servico/ordem_servico.html', context)
+        return render(request, 'ordemServico/ordem_servico/criar_ordem_servico.html', context)
+    
+
+@user_passes_test(verificar_tipo_usuario)
+@login_required
+def editar_ordem_servico(request, pk):
+    ordem_servico = get_object_or_404(OrdemServico, pk=pk)
+
+    # Formset para serviços associados à Ordem de Serviço
+    ServicoFormSet = inlineformset_factory(
+        OrdemServico,
+        Servico,
+        form=ServicoForm,
+        extra=0,  # Nenhum formulário extra
+        can_delete=True  # Permitir exclusão de serviços
+    )
+
+    if request.method == 'POST':
+        # Atualização dos dados
+        ordem_servico_form = OrdemServicoForm(request.POST, instance=ordem_servico)
+        servico_formset = ServicoFormSet(request.POST, instance=ordem_servico)
+
+        if ordem_servico_form.is_valid() and servico_formset.is_valid():
+            # Salvar Ordem de Serviço
+            ordem_servico = ordem_servico_form.save()
+
+            # Salvar serviços associados
+            servico_formset.save()
+
+            messages.success(request, "Ordem de Serviço atualizada com sucesso!")
+            return redirect(reverse('listar_ordens_servicos'))
+        else:
+            # Log de erros para depuração
+            if not ordem_servico_form.is_valid():
+                print(ordem_servico_form.errors)
+            if not servico_formset.is_valid():
+                print(servico_formset.errors)
+            messages.error(request, "Erro ao salvar a Ordem de Serviço. Verifique os campos.")
+
+    else:
+        # Pré-carregar dados existentes
+        ordem_servico_form = OrdemServicoForm(instance=ordem_servico)
+        servico_formset = ServicoFormSet(instance=ordem_servico)
+
+    context = {
+        'ordem_servico_form': ordem_servico_form,
+        'servico_formset': servico_formset,
+        'ordem_servico': ordem_servico,
+    }
+    return render(request, 'ordemServico/ordem_servico/editar_ordem_servico.html', context)

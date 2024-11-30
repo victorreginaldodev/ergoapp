@@ -58,8 +58,6 @@ class OrdemServicoForm(ModelForm):
             }),
             'data_criacao': DateInput(attrs={
                 'class': 'form-control w-100', 
-                'id': 'faturamento_1', 
-                'placeholder': 'Selecione a data', 
                 'type': 'date',
             }),
         }

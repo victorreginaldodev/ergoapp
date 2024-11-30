@@ -34,7 +34,7 @@ def criar_cliente(request):
         
         if form.is_valid():
             form.save()
-            return redirect('clientes') 
+            return redirect('listar_clientes') 
     else:
         form = ClienteForm()  
 

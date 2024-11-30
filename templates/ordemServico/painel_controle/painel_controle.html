@@ -244,7 +244,7 @@
 
             // Gráfico de serviços por status (gráfico de pizza)
             const labelsServicosPorStatus = ['EM ESPERA', 'EM ANDAMENTO', 'CONCLUÍDA'];
-            const coresPastel = ['#f8d7da', '#fff3cd', '#d4edda']; // Vermelho, amarelo e verde pastéis
+            const coresPastel = ['#ff4c4c', '#ffc107', '#28a745']; // Vermelho, amarelo e verde pastéis
 
             // Garante que os dados estejam na ordem correta
             const dataServicosPorStatus = [0, 0, 0]; // Inicializa com 0 para cada status
@@ -294,7 +294,7 @@
                             }
                         },
                         datalabels: {
-                            color: '#000000', // Cor do texto sobre a fatia
+                            color: '#fff', // Cor do texto sobre a fatia
                             anchor: 'end',
                             align: 'start',
                             formatter: (value) => `${value}`, // Exibe apenas o número
@@ -370,89 +370,5 @@
         .catch(error => console.error('Erro ao carregar os dados dos gráficos:', error));
 </script>
 
-<script>
-    function openServiceModal(row) {
-        const serviceId = row.getAttribute('data-id');
-        const modal = new bootstrap.Modal(document.getElementById('serviceDetailsModal'));
-        const modalBody = document.getElementById('serviceDetailsContent');
-    
-        // Exibe a modal
-        modal.show();
-    
-        // Reseta os campos para o estado inicial
-        document.getElementById('status-text').textContent = 'Carregando...';
-        document.getElementById('status').style.backgroundColor = '#f8f9fa';
-        document.getElementById('status').style.borderColor = 'transparent';
-        document.getElementById('status').style.color = '#6c757d';
-        document.getElementById('status-indicator').style.backgroundColor = '#6c757d';
-        document.getElementById('status-text').style.fontSize = '12px'; // Aplica o tamanho inline diretamente
-    
-        // Faz a requisição para obter os dados do serviço
-        fetch(`/servico/${serviceId}/`)
-            .then(response => {
-                if (!response.ok) throw new Error('Erro ao carregar os detalhes do serviço.');
-                return response.json(); // Retorna os dados como JSON
-            })
-            .then(data => {
-                // Atualiza outros campos
-                document.getElementById('cliente-nome').textContent = data.cliente;
-                document.getElementById('servico-nome').textContent = data.servico;
-                document.getElementById('data-recebimento').textContent = data.data_recebimento;
-                document.getElementById('data-conclusao').textContent = data.data_conclusao || 'NÃO CONCLUÍDO';
-                document.getElementById('descricao').textContent = data.descricao;
-    
-                // Atualiza o campo de status com texto e estilos
-                const statusElement = document.getElementById('status');
-                const statusIndicator = document.getElementById('status-indicator');
-                const statusText = document.getElementById('status-text');
-    
-                statusText.textContent = data.status;
-    
-                // Define os estilos com base no status
-                if (data.status.toLowerCase() === 'concluída') {
-                    statusElement.style.color = '#155724';
-                    statusElement.style.backgroundColor = '#f0fdf4';
-                    statusElement.style.borderColor = '#28a745';
-                    statusIndicator.style.backgroundColor = '#28a745';
-                } else if (data.status.toLowerCase() === 'em andamento') {
-                    statusElement.style.color = '#856404';
-                    statusElement.style.backgroundColor = '#fff8e1';
-                    statusElement.style.borderColor = '#ffc107';
-                    statusIndicator.style.backgroundColor = '#ffc107';
-                } else if (data.status.toLowerCase() === 'em espera') {
-                    statusElement.style.color = '#721c24';
-                    statusElement.style.backgroundColor = '#fde2e4';
-                    statusElement.style.borderColor = '#dc3545';
-                    statusIndicator.style.backgroundColor = '#dc3545';
-                }
-            })
-            .catch(error => {
-                modalBody.innerHTML = `<p class="text-danger text-center">${error.message}</p>`;
-            });
-    }
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Seleciona todos os elementos com a classe "valor-faturamento"
-        const elementos = document.querySelectorAll('.valor-faturamento');
-
-        elementos.forEach(el => {
-            // Obtém o valor bruto do atributo data-valor
-            const valorBruto = parseFloat(el.getAttribute('data-valor'));
-
-            if (!isNaN(valorBruto)) {
-                // Formata o valor no padrão brasileiro
-                const valorFormatado = new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                }).format(valorBruto);
-
-                // Atualiza o conteúdo do elemento com o valor formatado
-                el.textContent = valorFormatado;
-            }
-        });
-    });
-</script>
     
 {% endblock %}

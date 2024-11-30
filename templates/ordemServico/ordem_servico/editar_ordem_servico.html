@@ -11,38 +11,8 @@
         Criar novos serviços
     </h3>
 
-    <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 end-0 m-3" role="alert" style="z-index: 1050;">
-        <strong>Atenção:</strong> Verifique se cliente e serviços estão cadastrados. Caso contrário, precisará recarregar a página e perderá o progresso.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>   
-
-
     <form class="mb-5" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-
-        {% if messages %}
-            <div id="message-container">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} mt-3 fade show" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-            <script>
-                // Remove mensagens após 3 segundos
-                setTimeout(() => {
-                    const messageContainer = document.getElementById('message-container');
-                    if (messageContainer) {
-                        messageContainer.style.transition = "opacity 0.5s ease";
-                        messageContainer.style.opacity = "0";
-                        setTimeout(() => {
-                            messageContainer.remove();
-                        }, 500); // Aguarda a transição antes de remover
-                    }
-                }, 3000);
-            </script>
-        {% endif %}
-
 
         <!-- ========== CLIENTE ========== -->
         <div class="d-flex gap-3 mb-4">
@@ -53,7 +23,11 @@
 
             <div class="form-group w-25">
                 <label for="{{ ordem_servico_form.data_criacao.id_for_label }}">Data de recebimento:</label>
-                {{ ordem_servico_form.data_criacao }}
+                <input type="date" 
+                       name="{{ ordem_servico_form.data_criacao.html_name }}" 
+                       id="{{ ordem_servico_form.data_criacao.id_for_label }}" 
+                       value="{{ ordem_servico_form.data_criacao.value|date:'Y-m-d' }}" 
+                       class="form-control w-100">
             </div>
         </div>
 
@@ -118,24 +92,27 @@
         </h6>
         <div class="mb-3">
             {{ servico_formset.management_form }}
-            {% for servico in servico_formset %}
+            {% for form in servico_formset %}
             <div class="inlineform formset-servico mb-3 border p-3 rounded">
+                {{ form.id }} <!-- Campo oculto para o ID -->
+                {{ form.DELETE }} <!-- Campo para exclusão -->
+                
                 <div class="form-group mb-3">
-                    <label for="{{ servico.repositorio.id_for_label }}">Nome do serviço:</label>
-                    {{ servico.repositorio }}
+                    <label for="{{ form.repositorio.id_for_label }}">Nome do serviço:</label>
+                    {{ form.repositorio }}
                 </div>
-
+        
                 <div class="form-group mb-3">
-                    <label for="{{ servico.descricao.id_for_label }}">Descrição do serviço:</label>
-                    {{ servico.descricao }}
+                    <label for="{{ form.descricao.id_for_label }}">Descrição do serviço:</label>
+                    {{ form.descricao }}
                 </div>
-
             </div>
             {% endfor %}
         </div>
+        
 
         <div class="d-flex justify-content-end p-3">
-            <button type="submit" class="btn button w-25 mt-4 py-2 px-2">
+            <button type="submit" class="btn button mt-4 py-2 px-2">
                 Salvar todos os serviços
             </button>
         </div>
@@ -209,70 +186,5 @@
     });
 </script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var inputValor = document.getElementById('valorInput');
-        var form = inputValor.closest('form'); // Captura o formulário que contém o input
 
-        // Função para formatar o valor como moeda (sem o "R$")
-        function formatCurrency(value) {
-            value = value.replace(/\D/g, ""); // Remove tudo que não for dígito
-            if (value.length === 0) { // Se não houver dígitos, retorna "0,00"
-                return "0,00";
-            }
-            // Converte para número com duas casas decimais
-            value = (parseFloat(value) / 100).toFixed(2);
-            // Substitui ponto por vírgula
-            value = value.replace(".", ",");
-            // Adiciona pontos para milhar
-            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            return value;
-        }
-
-        // Função para limpar a formatação (para o valor ser submetido como float)
-        function cleanCurrency(value) {
-            value = value.replace(/\./g, ''); // Remove pontos de milhar
-            value = value.replace(',', '.'); // Substitui vírgula por ponto
-            return parseFloat(value); // Retorna como número float
-        }
-
-        // Evento que ocorre enquanto o usuário digita
-        inputValor.addEventListener('input', function (e) {
-            var value = e.target.value;
-            value = formatCurrency(value);
-            e.target.value = value; // Atualiza o input com o valor formatado
-        });
-
-        // Ao focar no campo, removemos a formatação para facilitar a edição
-        inputValor.addEventListener('focus', function (e) {
-            var value = e.target.value;
-            value = value.replace(/\./g, ''); // Remove os pontos de milhar
-            value = value.replace(',', '.'); // Substitui a vírgula por ponto
-            e.target.value = value; // Atualiza o input com o valor 'limpo' (float-like)
-        });
-
-        // Ao perder o foco, formata novamente o valor como moeda
-        inputValor.addEventListener('blur', function (e) {
-            var value = e.target.value;
-            if (value) {
-                value = formatCurrency(value); // Formata o valor
-                e.target.value = value; // Atualiza o input
-            }
-        });
-
-        // Antes de submeter o formulário, converte o valor para um formato float adequado
-        form.addEventListener('submit', function (e) {
-            var value = inputValor.value;
-            value = cleanCurrency(value); // Converte para float
-            inputValor.value = value; // Define o valor correto para envio
-        });
-    });
-</script>
-
-<script>
-    // Oculta o alerta após 7 segundos
-    setTimeout(() => {
-        document.querySelector('.alert').classList.remove('show');
-    }, 7000);
-</script>
 {% endblock %}

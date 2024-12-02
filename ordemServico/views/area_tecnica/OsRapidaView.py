@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Case, When, Value, IntegerField, Q
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from ordemServico.forms import OsRapidaForm, OsRapidaUpdateForm, OsRapidaFullUpdateForm
 from ordemServico.models import MiniOS, Profile
@@ -161,12 +162,15 @@ def editar_os_rapida(request, os_rapida_id):
 
         if form.is_valid():
             form.save()
+            messages.success(request, "Ordem de Serviço atualizada com sucesso.")
             return redirect('os_rapida')
+        else:
+            messages.error(request, "Erro ao atualizar a Ordem de Serviço. Verifique os campos.")
     else:
         form = OsRapidaFullUpdateForm(instance=os_rapida)
 
     context = {
         'form': form,
-        'os_rapida_id': os_rapida_id 
+        'os_rapida_id': os_rapida_id
     }
     return render(request, 'ordemServico/area_tecnica/editar_os_rapida.html', context)

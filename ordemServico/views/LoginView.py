@@ -12,22 +12,22 @@ def user_login(request):
         if user is not None:
             login(request, user)
             
-            # Verifica o tipo de usuário e redireciona para a página correspondente
-            user_profile = user.profile  # Acessa o perfil do usuário
+            user_profile = user.profile 
             
-            if user_profile.role in [1, 2]:  # Diretor ou Administrativo
-                return redirect('painel_de_controle')  # Redireciona para a página 'criar_ordem_servico'
-            elif user_profile.role == 3:  # Líder Técnico
-                return redirect('servicos')  # Redireciona para a página 'lider_tecnico'
-            elif user_profile.role in [4, 5]:  # Sub-Líder Técnico ou Técnico
-                return redirect('tarefas')  # Redireciona para a página 'tecnico'
+            if user_profile.role in [1, 2]: 
+                return redirect('painel_de_controle') 
+            elif user_profile.role == 3: 
+                return redirect('lista_servicos') 
+            elif user_profile.role in [4, 5]:
+                return redirect('tarefas') 
         
         else:
            messages.error(request, "Usuário ou senha inválidos!")
     
     return render(request, 'ordemServico/Login.html')
 
+
 # View de logout
 def user_logout(request):
     logout(request)
-    return redirect('login')  # Redireciona para a página de login após o logout
+    return redirect('login')

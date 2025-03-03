@@ -10,7 +10,7 @@ from ordemServico.models import OrdemServico, Servico, Profile
 
 
 def verificar_tipo_usuario(user):
-    ''' 
+    '''
         Função que verifica se o usuário é 'Diretor', 'Administrativo' ou 'Líder Técnico
     '''
     try:
@@ -23,11 +23,11 @@ def verificar_tipo_usuario(user):
 def listar_ordens_servicos(request):
     # Ordena por data de criação (mais recente primeiro)
     ordens_servicos = OrdemServico.objects.all().order_by('-data_criacao')
-    
+
     # Quantidade de itens por página
     itens_por_pagina = 10
     paginator = Paginator(ordens_servicos, itens_por_pagina)
-    
+
     # Obtém o número da página da requisição
     pagina = request.GET.get('page')
     ordens_paginadas = paginator.get_page(pagina)
@@ -70,12 +70,12 @@ def criar_ordem_servico(request):
                 messages.error(request, "Erro ao salvar a Ordem de Serviço. Verifique os campos.")
             if not servico_formset.is_valid():
                 messages.error(request, "Erro ao salvar os serviços. Verifique os campos.")
-            
+
             context = {
                 'ordem_servico_form': ordem_servico_form,
                 'servico_formset': servico_formset,
             }
-            return render(request, 'ordemServico/ordem_servico/ordem_servico.html', context)
+            return render(request, 'ordemServico/ordem_servico/criar_ordem_servico.html', context)
 
     else:
         ordem_servico_form = OrdemServicoForm()
@@ -86,7 +86,7 @@ def criar_ordem_servico(request):
             'servico_formset': servico_formset,
         }
         return render(request, 'ordemServico/ordem_servico/criar_ordem_servico.html', context)
-    
+
 
 @user_passes_test(verificar_tipo_usuario)
 @login_required

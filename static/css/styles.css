@@ -4,109 +4,18 @@
     --azul-principal: #2A6CB2;
     --azul-secundario: #0BB4ED;
     --cinza: #78828B;
-    --cinza-claro: #f5f5f5;
+    --cinza-claro: #f4f4f4;
     --branco: #fff;
     --fonte: "Roboto", sans-serif;
 }
 
 body {
     font-family: var(--fonte);
-    /* background-color: var(--cinza-claro); */
-}
-
-/* SIDE BAR */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 180px;
-    background: linear-gradient(135deg, var(--azul-secundario) 10%, var(--azul-principal) 90%);
-    padding-top: 30px;
-    padding-left: 10px;
-    z-index: 999;
-}
-
-.logo {
-    padding-left: 15px;
-    margin-bottom: 2.1rem;
-}
-
-.logo img {
-    width: 2vw;
-}
-
-.dropdown-sidebar button,
-.dropdown-sidebar button:hover,
-.dropdown-sidebar button:focus,
-.dropdown-sidebar button:active {
-    color: var(--cinza-claro);
-    font-weight: 500;
-    outline: none;
-    box-shadow: none;
-    background-color: inherit;
-    font-size: 16px;
-}
-
-.sidebar a {
-    color: var(--cinza-claro);
-    font-weight: 500;
-    text-decoration: none;
-    display: block;
-    padding: 12px;
-    font-size: 1rem;
-    margin-bottom: 10px;
-}
-
-/* CONTENT */
-.content {
-    margin-left: 180px;
+    overflow-x: hidden;
 }
 
 .form-control {
     width: 30vw;
-}
-
-.button {
-    border: none;
-    /* background-color: var(--azul-secundario); */
-    background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
-    font-size: 14px;
-    padding: 0 1rem;
-    font-weight: 500;
-    color: var(--branco);
-}
-
-.button:hover {
-    border: none;
-    /* background-color: var(--azul-secundario); */
-    background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
-    font-size: 14px;
-    padding: 0 1rem;
-    font-weight: 500;
-    color: var(--branco);
-    transform: scale(1.05);
-}
-
-.btn-link i {
-    font-size: 18px;
-    color: var(--cinza);
-}
-
-.btn-link i:hover {
-    font-size: 17px;
-
-}
-
-.page-title {
-    margin-top: 0 20px 20px 20px;
-    padding-top: 20px;
-}
-
-.page-title h3 {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--cinza);
 }
 
 textarea {
@@ -119,6 +28,82 @@ textarea::placeholder {
     color: var(--cinza);
 }
 
+label {
+    font-size: 14px;
+    color: var(--cinza);
+    font-weight: 400;
+    margin-left: 5px;
+}
+
+.botao {
+    border: none;
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
+    font-size: 14px;
+    padding: 0.5rem 1rem !important;
+    font-weight: 400;
+    color: var(--branco);
+    border-radius: 8px;
+}
+
+.button {
+    border: none;
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
+    font-size: 14px;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500;
+    color: var(--branco);
+    border-radius: 8px;
+    box-shadow: 1px 1px 2px black;
+}
+
+.button:hover {
+    border: none;
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%);
+    font-size: 14px;
+    padding: 0 1rem;
+    font-weight: 500;
+    color: var(--branco);
+    transform: scale(1.05);
+}
+
+.botao-acao-rapida {
+    font-size: 14px !important;
+    background: linear-gradient(135deg, var(--azul-secundario) 0%, var(--azul-principal) 100%) !important;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.3rem 1rem;
+    border-radius: 12px;
+    border: none !important;
+    box-shadow: 0px 0px 5px var(--cinza);
+}
+
+.btn-link i {
+    font-size: 18px;
+    color: var(--cinza);
+}
+
+.btn-link i:hover {
+    font-size: 17px;
+
+}
+
+.titulo-pagina {
+    margin: 2rem 0;
+
+    color: var(--cinza);
+    font-size: 1.25rem;
+    font-weight: 600;
+    
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+
+
+/* 
+    VERIFICAR
+*/
 .secao-os {
     font-size: 18px;
     color: var(--cinza);
@@ -129,13 +114,6 @@ textarea::placeholder {
     border: 1px solid var(--cinza);
     border-radius: 12px;
     box-sizing: border-box;
-}
-
-label {
-    font-size: 14px;
-    color: var(--cinza);
-    font-weight: 400;
-    margin-bottom: 5px;
 }
 
 .filters {
@@ -185,9 +163,10 @@ label {
 
 .accordion-infos p {
     font-size: 14px;
-    padding: 12px;
-    border: 1px solid var(--cinza);
+    padding: 16px;
+    /* border: 1px solid var(--cinza); */
     border-radius: 10px;
+    box-shadow: 1px 1px 2px var(--cinza);
 }
 
 .accordion-observacao {

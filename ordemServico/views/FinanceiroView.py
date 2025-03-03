@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.db.models import Sum
+from django.db.models import Sum, OuterRef, Subquery, Count, Q, F
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
 
-from ordemServico.models import OrdemServico, Profile, MiniOS
+from ordemServico.models import OrdemServico, Profile, MiniOS, Servico
 from ordemServico.forms import OrdemServicoUpdateForm, OsRapidaFaturamentoForm
 
 
@@ -20,9 +20,22 @@ def verificar_tipo_usuario(user):
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 def financeiro(request):
-    ordens_servicos = OrdemServico.objects.all()
+    servicos_concluidos = Servico.objects.filter(
+        ordem_servico=OuterRef('pk'),
+        status='concluida'
+    ).values('ordem_servico').annotate(count=Count('id')).values('count')
 
-    # Lista de dicionários, cada um contendo uma ordem e seu formulário correspondente
+    total_servicos = Servico.objects.filter(
+        ordem_servico=OuterRef('pk')
+    ).values('ordem_servico').annotate(count=Count('id')).values('count')
+
+    ordens_servicos = OrdemServico.objects.annotate(
+        total_servicos=Subquery(total_servicos),
+        servicos_concluidos=Subquery(servicos_concluidos)
+    ).filter(
+        total_servicos=F('servicos_concluidos')
+    ).distinct()
+
     ordens_com_formularios = [
         {
             "ordem": ordem,
@@ -35,8 +48,8 @@ def financeiro(request):
         "ordens_com_formularios": ordens_com_formularios,
         "total_faturadas": ordens_servicos.filter(faturamento="sim").aggregate(Sum("valor"))["valor__sum"] or 0,
         "total_liberadas": (
-            OrdemServico.objects.filter(cobranca_imediata="sim", faturamento="nao") |
-            OrdemServico.objects.filter(servicos__isnull=False, servicos__status="concluida")
+            ordens_servicos.filter(cobranca_imediata="sim", faturamento="nao") |
+            ordens_servicos.filter(servicos__isnull=False, servicos__status="concluida")
             .exclude(faturamento="sim")
         ).distinct().aggregate(Sum("valor"))["valor__sum"] or 0,
         "total_nao_liberadas": sum(ordem.valor for ordem in ordens_servicos if not ordem.liberada_para_faturamento()),
@@ -80,7 +93,7 @@ def atualizar_contador_liberadas(request):
         )
 
         return JsonResponse({"total_liberadas": total_liberadas})
-    
+
     return JsonResponse({"error": "Requisição inválida."}, status=400)
 
 

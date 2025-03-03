@@ -25,7 +25,17 @@
 
 <body>
     {% include 'ordemServico/partials/_navbar.html' %}
-    
+
+    <!-- Bloco de Mensagens -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}danger{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+
     <main style="margin-top: 17.5vh;">
     {% block content %} {% endblock %}
     </main>
@@ -36,6 +46,18 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="{% static 'js/jquery.formset.js'%}" ></script>
     <script src="https://kit.fontawesome.com/8d91cea832.js" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            setTimeout(function () {
+                let alerts = document.querySelectorAll(".alert");
+                alerts.forEach(function (alert) {
+                    let bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 3000);
+        });
+    </script>
 
     {% block scripts %}
     {% endblock scripts %}

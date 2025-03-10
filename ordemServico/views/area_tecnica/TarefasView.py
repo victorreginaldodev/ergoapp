@@ -62,7 +62,7 @@ def tecnico(request):
             "nome_representante": tarefa.servico.ordem_servico.cliente.nome_representante,
             "setor_representante": tarefa.servico.ordem_servico.cliente.setor_representante,
             "email_representante": tarefa.servico.ordem_servico.cliente.email_representante,
-            "email_representante": tarefa.servico.ordem_servico.cliente.email_representante,
+            "telefone_representante": tarefa.servico.ordem_servico.cliente.contato_representante,
             "servico_nome": tarefa.servico.repositorio.nome if tarefa.servico else "Não informado",
             "ordem_servico_id": tarefa.ordem_servico.id if tarefa.ordem_servico else None,
             "descricao_tarefa": tarefa.descricao if tarefa.descricao else "Descrição para a tarefa não informada",

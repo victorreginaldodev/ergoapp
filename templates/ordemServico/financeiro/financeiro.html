@@ -116,26 +116,6 @@
                 ">
                 Liberadas
             </button>
-            <!-- Contador -->
-            <span id="contador_liberadas" style="
-                    display: none; /* Escondido por padrão */
-                    position: absolute;
-                    top: -5px;
-                    right: -5px;
-                    background-color: red; /* Fundo vermelho */
-                    color: white;
-                    border-radius: 50%; /* Bolinha */
-                    width: 25px;
-                    height: 25px;
-                    font-size: 12px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-                    font-weight: bold;
-                ">
-                0
-            </span>
         </div>
 
         <div class="col-auto">
@@ -347,36 +327,7 @@ brasileiro de moeda (R$). -->
         const filtroClienteInput = document.getElementById("filtro_cliente");
         const botaoLiberadas = document.getElementById("filtro_liberada");
         const botaoLimparFiltros = document.getElementById("limpar_filtros");
-        const contadorLiberadas = document.getElementById("contador_liberadas");
-
-        // Função para buscar o número atualizado de ordens liberadas no servidor
-        function atualizarContadorLiberadas() {
-            fetch("/atualizar-contador-liberadas/", {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                },
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Erro ao buscar dados do contador.");
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    // Atualiza o contador com o valor retornado do servidor
-                    if (data.total_liberadas > 0) {
-                        contadorLiberadas.textContent = data.total_liberadas;
-                        contadorLiberadas.style.display = "flex";
-                    } else {
-                        contadorLiberadas.style.display = "none";
-                    }
-                })
-                .catch((error) => {
-                    console.error("Erro ao atualizar o contador:", error);
-                });
-        }
-
+        
         // Função para filtrar ordens liberadas
         function filtrarLiberadas() {
             const linhas = tabela.querySelectorAll(".accordion-item");
@@ -396,8 +347,6 @@ brasileiro de moeda (R$). -->
                     }
                 }
             });
-
-            atualizarContadorLiberadas(); // Atualiza o contador após o filtro
         }
 
         // Função para filtrar pelo nome do cliente
@@ -418,8 +367,6 @@ brasileiro de moeda (R$). -->
                     }
                 }
             });
-
-            atualizarContadorLiberadas(); // Atualiza o contador após o filtro
         }
 
         // Função para limpar todos os filtros
@@ -431,19 +378,12 @@ brasileiro de moeda (R$). -->
             });
 
             filtroClienteInput.value = ""; // Limpa o input de cliente
-            atualizarContadorLiberadas(); // Atualiza o contador
         }
 
         // Event listeners
         botaoLiberadas.addEventListener("click", filtrarLiberadas);
         filtroClienteInput.addEventListener("input", filtrarPorCliente);
         botaoLimparFiltros.addEventListener("click", limparFiltros);
-
-        // Atualiza o contador dinamicamente a cada 5 segundos
-        setInterval(atualizarContadorLiberadas, 5000);
-
-        // Inicializa o contador ao carregar a página
-        atualizarContadorLiberadas();
     });
 </script>
 

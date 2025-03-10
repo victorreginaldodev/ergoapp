@@ -20,6 +20,12 @@ def verificar_tipo_usuario(user):
 @login_required
 @user_passes_test(verificar_tipo_usuario)
 def financeiro(request):
+    todas_ordens = OrdemServico.objects.all()
+
+    total_nao_liberadas = sum(
+        ordem.valor for ordem in todas_ordens if not ordem.liberada_para_faturamento()
+    )
+
     servicos_concluidos = Servico.objects.filter(
         ordem_servico=OuterRef('pk'),
         status='concluida'
@@ -52,7 +58,7 @@ def financeiro(request):
             ordens_servicos.filter(servicos__isnull=False, servicos__status="concluida")
             .exclude(faturamento="sim")
         ).distinct().aggregate(Sum("valor"))["valor__sum"] or 0,
-        "total_nao_liberadas": sum(ordem.valor for ordem in ordens_servicos if not ordem.liberada_para_faturamento()),
+        "total_nao_liberadas": total_nao_liberadas,
     }
 
     return render(request, "ordemServico/financeiro/financeiro.html", context)

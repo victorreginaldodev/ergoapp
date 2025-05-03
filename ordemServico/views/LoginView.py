@@ -16,7 +16,7 @@ def user_login(request):
             
             if user_profile.role in [1, 2]: 
                 return redirect('painel_de_controle') 
-            elif user_profile.role == 3: 
+            elif user_profile.role in [3, 4]: 
                 return redirect('lista_servicos') 
             elif user_profile.role in [4, 5]:
                 return redirect('tarefas') 

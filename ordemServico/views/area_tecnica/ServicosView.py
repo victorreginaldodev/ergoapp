@@ -16,7 +16,7 @@ def verificar_tipo_usuario(user):
     # Função que verifica se o usuário é 'Diretor', 'Administrativo' ou 'Líder Técnico'
 
     try:
-        return user.profile.role in [1, 2, 3]
+        return user.profile.role in [1, 2, 3, 4]
     except Profile.DoesNotExist:
         return False
 
@@ -62,7 +62,7 @@ def lista_servicos(request):
 
     # Perfis para filtro de colaboradores (excluindo administrativos)
     profiles = Profile.objects.select_related('user').exclude(role=2).order_by('user__username')
-
+        
     # Resposta AJAX para carregamento dinâmico
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         data = [
@@ -79,7 +79,7 @@ def lista_servicos(request):
                 "email_representante": servico.ordem_servico.cliente.email_representante if servico.ordem_servico and servico.ordem_servico.cliente else "Não cadastrado",
                 "telefone_representante": servico.ordem_servico.cliente.contato_representante if servico.ordem_servico and servico.ordem_servico.cliente else "Não cadastrado",
                 "ordem_servico_id": servico.ordem_servico.id if servico.ordem_servico else None,
-                "valor": servico.ordem_servico.valor if servico.ordem_servico else None,
+                "valor": "-" if request.user.profile.role == 4 else servico.ordem_servico.valor,
                 "repositorio_nome": servico.repositorio.nome if servico.repositorio else "N/A",
                 "status": servico.status,
                 "status_display": servico.get_status_display(),

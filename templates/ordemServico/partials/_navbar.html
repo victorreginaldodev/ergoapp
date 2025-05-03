@@ -61,7 +61,7 @@
                             Área Técnica
                         </a>
                         <ul class="dropdown-menu">
-                            {% if request.user.profile.role == 1 or request.user.profile.role == 2 or request.user.profile.role == 3 %}
+                            {% if request.user.profile.role == 1 or request.user.profile.role == 2 or request.user.profile.role == 3 or request.user.profile.role == 4  %}
                             <li>
                                 <a class="dropdown-item" href="{% url 'lista_servicos' %}">
                                     <i class="bi bi-briefcase"></i>

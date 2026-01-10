@@ -127,14 +127,19 @@ def send_new_task_notification(sender, instance, created, **kwargs):
         # Pega o e-mail do profile relacionado à tarefa
         destinatario = instance.profile.user.email
 
-        subject = f'Nova Tarefa Criada: {instance.servico.repositorio.nome}'
+        repositorio_nome = (
+            instance.servico.repositorio.nome
+            if instance.servico.repositorio_id
+            else instance.servico.descricao or "Serviço"
+        )
+        subject = f'Nova Tarefa Criada: {repositorio_nome}'
         
         # Cria o contexto para o template do e-mail
         context = {
             'tarefa': instance,
             'profile': instance.profile,
             'servico': instance.servico,
-            'ordem_servico': instance.ordem_servico,
+            'ordem_servico': instance.servico.ordem_servico,
         }
         
         # Renderiza o conteúdo HTML do template de e-mail

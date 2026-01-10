@@ -62,10 +62,6 @@ class ClienteForm(ModelForm):
             'cliente_ativo': Select(attrs={
                 'class': 'form-select',
             }),
-            'renovacao_automatica': CheckboxInput(attrs={
-                'class': 'form-check-input',
-                'id': 'id_renovacao_automatica',
-            }),
             'cobranca_revisao_alteracao': CheckboxInput(attrs={
                 'class': 'form-check-input',
                 'id': 'id_cobranca_revisao_alteracao',

@@ -27,8 +27,27 @@ class Tarefa(models.Model):
     
 
     def save(self, *args, **kwargs):
-        # Chama o save original para salvar a tarefa
+        servico_anterior_id = None
+
+        if self.pk:
+            servico_anterior_id = (
+                Tarefa.objects.filter(pk=self.pk)
+                .values_list('servico_id', flat=True)
+                .first()
+            )
+
         super().save(*args, **kwargs)
-        # Verifica se a tarefa foi concluída e atualiza o serviço
-        if self.status == 'concluida':
-            self.servico.concluir_servico()
+
+        if servico_anterior_id and servico_anterior_id != self.servico_id:
+            servico_anterior = Servico.objects.filter(pk=servico_anterior_id).first()
+            if servico_anterior:
+                servico_anterior.sincronizar_status()
+
+        if self.servico_id:
+            self.servico.sincronizar_status()
+
+    def delete(self, *args, **kwargs):
+        servico = self.servico
+        super().delete(*args, **kwargs)
+        if servico:
+            servico.sincronizar_status()

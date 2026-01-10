@@ -15,24 +15,24 @@ class ClienteAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(Contato)
-class ContatoAdmin(admin.ModelAdmin):
-    # Exibir essas colunas na listagem
-    list_display = ('nome', 'cliente', 'email', 'telefone')
-    
-    # Adicionar campos de pesquisa
-    search_fields = ('nome', 'cliente__nome', 'email', 'telefone')
-    
-    # Exibir as informações detalhadas ao editar ou adicionar um contato
-    fieldsets = (
-        (None, {
-            'fields': ('cliente', 'nome', 'email', 'telefone')
-        }),
-        ('Observações', {
-            'fields': ('observacao',),
-            'classes': ('collapse',),
-        }),
-    )
+# @admin.register(Contato)
+# class ContatoAdmin(admin.ModelAdmin):
+#     # Exibir essas colunas na listagem
+#     list_display = ('nome', 'cliente', 'email', 'telefone')
+#     
+#     # Adicionar campos de pesquisa
+#     search_fields = ('nome', 'cliente__nome', 'email', 'telefone')
+#     
+#     # Exibir as informações detalhadas ao editar ou adicionar um contato
+#     fieldsets = (
+#         (None, {
+#             'fields': ('cliente', 'nome', 'email', 'telefone')
+#         }),
+#         ('Observações', {
+#             'fields': ('observacao',),
+#             'classes': ('collapse',),
+#         }),
+#     )
 
 
 @admin.register(MiniOS)

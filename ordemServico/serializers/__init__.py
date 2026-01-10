@@ -1,2 +1,2 @@
 from .OrdemServicoSerializer import *
-from .MiniOsSerializer import *
+from .MiniOSSerializer import *

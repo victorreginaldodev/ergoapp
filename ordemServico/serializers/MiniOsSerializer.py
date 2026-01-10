@@ -1,34 +1,39 @@
 from rest_framework import serializers
-from ordemServico.models import MiniOS, RepositorioMiniOS, Profile, Cliente
+from ordemServico.models import MiniOS, Cliente, RepositorioMiniOS, Profile
 
-
-class ClienteMiniOsSerializer(serializers.ModelSerializer):
-
+class ClienteMiniOSSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
-        fields = ['nome', 'tipo_cliente', 'cliente_ativo']
+        fields = ['id', 'nome', 'tipo_cliente', 'cliente_ativo']
 
-
-class ProfileMiniOsSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(source='user.username')
-
-    class Meta:
-        model = Profile
-        fields = ['user_name']
-
-
-class RepositorioMiniOsSerializer(serializers.ModelSerializer):
-
+class RepositorioMiniOSDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepositorioMiniOS
-        exclude = ['descricao']
+        fields = ['id', 'nome', 'descricao']
 
+class ProfileMiniOSSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    class Meta:
+        model = Profile
+        fields = ['id', 'username', 'role']
 
-class MiniOsSerializer(serializers.ModelSerializer):
-    cliente = ClienteMiniOsSerializer()
-    profile = ProfileMiniOsSerializer()
-    servico = RepositorioMiniOsSerializer()
-
+class MiniOSSerializer(serializers.ModelSerializer):
     class Meta:
         model = MiniOS
-        exclude = ['descricao']
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.cliente:
+            representation['cliente'] = ClienteMiniOSSerializer(instance.cliente).data
+        if instance.servico:
+            representation['servico'] = RepositorioMiniOSDetailSerializer(instance.servico).data
+        if instance.profile:
+            representation['profile'] = ProfileMiniOSSerializer(instance.profile).data
+        return representation
+
+
+class MiniOSFaturamentoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MiniOS
+        fields = ['id', 'faturamento', 'n_nf']

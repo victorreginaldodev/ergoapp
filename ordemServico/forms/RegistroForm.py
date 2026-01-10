@@ -14,4 +14,4 @@ class UserRegisterForm(UserCreationForm):
 class ProfileRegisterForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['role', 'cpf', 'profile_picture']
+        fields = ['role']

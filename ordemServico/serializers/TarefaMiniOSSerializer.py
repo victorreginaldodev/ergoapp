@@ -13,6 +13,8 @@ class TarefaMiniOSSerializer(serializers.Serializer):
         """ Formata os dados corretamente, independentemente do modelo de origem """
         if isinstance(instance, Tarefa):
             return {
+                "id": instance.id,
+                "type": "tarefa",
                 "cliente": instance.servico.ordem_servico.cliente.nome if instance.servico.ordem_servico and instance.servico.ordem_servico.cliente else "Sem Cliente",
                 "servico": instance.servico.repositorio.nome if instance.servico.repositorio else "Sem Serviço",
                 "profile": instance.profile.user.username if instance.profile else "Sem Profile",
@@ -22,6 +24,8 @@ class TarefaMiniOSSerializer(serializers.Serializer):
             }
         elif isinstance(instance, MiniOS):
             return {
+                "id": instance.id,
+                "type": "minios",
                 "cliente": instance.cliente.nome if instance.cliente else "Sem Cliente",
                 "servico": instance.servico.nome if instance.servico else "Sem Serviço",
                 "profile": instance.profile.user.username if instance.profile else "Sem Profile",

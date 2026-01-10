@@ -20,11 +20,38 @@ class Servico(models.Model):
     def __str__(self):
         return f'Ordem de serviço: {self.ordem_servico.id} | Cliente: {self.ordem_servico.cliente.nome}'
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.sincronizar_status()
+
+    def sincronizar_status(self):
+        """Garante que o status do serviço reflita o estado das tarefas relacionadas."""
+        tem_tarefas = self.tarefas.exists()
+        todos_concluidos = tem_tarefas and not self.tarefas.exclude(status='concluida').exists()
+
+        campos_para_atualizar = {}
+
+        if todos_concluidos:
+            if self.status != 'concluida':
+                campos_para_atualizar['status'] = 'concluida'
+            if self.data_conclusao is None:
+                campos_para_atualizar['data_conclusao'] = timezone.now().date()
+        else:
+            if self.status == 'concluida':
+                campos_para_atualizar['status'] = 'em_andamento'
+            if self.data_conclusao is not None:
+                campos_para_atualizar['data_conclusao'] = None
+
+        if campos_para_atualizar:
+            Servico.objects.filter(pk=self.pk).update(**campos_para_atualizar)
+            for campo, valor in campos_para_atualizar.items():
+                setattr(self, campo, valor)
+
+        if self.ordem_servico_id:
+            self.ordem_servico.atualizar_status_conclusao()
+
+        return todos_concluidos
 
     def concluir_servico(self):
-        # Verifica se todas as tarefas associadas estão concluídas
-        if all(tarefa.status == 'concluida' for tarefa in self.tarefas.all()):
-            # Atualiza o status do serviço para 'concluída' e define a data de conclusão
-            self.status = 'concluida'
-            self.data_conclusao = timezone.now().date()
-            self.save()
+        """Mantido por compatibilidade; utiliza o fluxo de sincronização completo."""
+        return self.sincronizar_status()

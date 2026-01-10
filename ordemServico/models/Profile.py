@@ -15,10 +15,8 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.IntegerField(choices=TIPO_USUARIO, default=5)
-    cpf = models.CharField(max_length=14)
     created = models.DateTimeField(auto_now_add=True)
-    token = models.CharField(max_length=255, null=True, blank=True)
-    profile_picture = models.ImageField(null=True, blank=True)
+    active = models.BooleanField(default=True)
 
 
     def __str__(self):

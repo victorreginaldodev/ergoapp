@@ -8,5 +8,4 @@ from .area_tecnica.TarefasView import *
 from .ClientesView import *
 from .RepositorioView import *
 from .UsuarioView import *
-from .OrdemServicoViewSet import *
 from .MiniOsViewSet import *

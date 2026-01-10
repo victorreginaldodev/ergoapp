@@ -1,5 +1,4 @@
 from .Profile import Profile
-from .Contato import Contato
 from .Cliente import Cliente
 from .RepositorioMiniOS import RepositorioMiniOS
 from .MiniOS import MiniOS

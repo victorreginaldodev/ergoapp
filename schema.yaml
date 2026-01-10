@@ -1,0 +1,2621 @@
+openapi: 3.0.3
+info:
+  title: ErgoApp API
+  version: 1.0.0
+  description: Documentação completa das APIs do sistema ErgoApp
+paths:
+  /api/clientes/:
+    get:
+      operationId: clientes_list
+      tags:
+      - clientes
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cliente'
+          description: ''
+    post:
+      operationId: clientes_create
+      tags:
+      - clientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClienteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClienteRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+  /api/clientes/{id}/:
+    get:
+      operationId: clientes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cliente.
+        required: true
+      tags:
+      - clientes
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+    put:
+      operationId: clientes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cliente.
+        required: true
+      tags:
+      - clientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClienteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClienteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClienteRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+    patch:
+      operationId: clientes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cliente.
+        required: true
+      tags:
+      - clientes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClienteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClienteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClienteRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cliente'
+          description: ''
+    delete:
+      operationId: clientes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this cliente.
+        required: true
+      tags:
+      - clientes
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/minios/:
+    get:
+      operationId: minios_list
+      tags:
+      - minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MiniOS'
+          description: ''
+    post:
+      operationId: minios_create
+      tags:
+      - minios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MiniOSRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MiniOSRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MiniOSRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MiniOS'
+          description: ''
+  /api/minios/{id}/:
+    get:
+      operationId: minios_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mini os.
+        required: true
+      tags:
+      - minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MiniOS'
+          description: ''
+    put:
+      operationId: minios_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mini os.
+        required: true
+      tags:
+      - minios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MiniOSRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MiniOSRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MiniOSRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MiniOS'
+          description: ''
+    patch:
+      operationId: minios_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mini os.
+        required: true
+      tags:
+      - minios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMiniOSRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMiniOSRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMiniOSRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MiniOS'
+          description: ''
+    delete:
+      operationId: minios_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this mini os.
+        required: true
+      tags:
+      - minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/ordens-servico/:
+    get:
+      operationId: ordens_servico_list
+      tags:
+      - ordens-servico
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrdemServico'
+          description: ''
+    post:
+      operationId: ordens_servico_create
+      tags:
+      - ordens-servico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdemServicoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrdemServicoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrdemServicoRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdemServico'
+          description: ''
+  /api/ordens-servico/{id}/:
+    get:
+      operationId: ordens_servico_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ordem servico.
+        required: true
+      tags:
+      - ordens-servico
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdemServico'
+          description: ''
+    put:
+      operationId: ordens_servico_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ordem servico.
+        required: true
+      tags:
+      - ordens-servico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrdemServicoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrdemServicoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrdemServicoRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdemServico'
+          description: ''
+    patch:
+      operationId: ordens_servico_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ordem servico.
+        required: true
+      tags:
+      - ordens-servico
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrdemServicoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrdemServicoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrdemServicoRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdemServico'
+          description: ''
+    delete:
+      operationId: ordens_servico_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this ordem servico.
+        required: true
+      tags:
+      - ordens-servico
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/profiles/:
+    get:
+      operationId: profiles_list
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+          description: ''
+    post:
+      operationId: profiles_create
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/profiles/{id}/:
+    get:
+      operationId: profiles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    put:
+      operationId: profiles_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    patch:
+      operationId: profiles_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - profiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    delete:
+      operationId: profiles_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this profile.
+        required: true
+      tags:
+      - profiles
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/repositorios/:
+    get:
+      operationId: repositorios_list
+      tags:
+      - repositorios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Repositorio'
+          description: ''
+    post:
+      operationId: repositorios_create
+      tags:
+      - repositorios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepositorioRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RepositorioRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RepositorioRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repositorio'
+          description: ''
+  /api/repositorios-minios/:
+    get:
+      operationId: repositorios_minios_list
+      tags:
+      - repositorios-minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RepositorioMiniOS'
+          description: ''
+    post:
+      operationId: repositorios_minios_create
+      tags:
+      - repositorios-minios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepositorioMiniOSRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RepositorioMiniOSRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RepositorioMiniOSRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositorioMiniOS'
+          description: ''
+  /api/repositorios-minios/{id}/:
+    get:
+      operationId: repositorios_minios_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio mini os.
+        required: true
+      tags:
+      - repositorios-minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositorioMiniOS'
+          description: ''
+    put:
+      operationId: repositorios_minios_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio mini os.
+        required: true
+      tags:
+      - repositorios-minios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepositorioMiniOSRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RepositorioMiniOSRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RepositorioMiniOSRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositorioMiniOS'
+          description: ''
+    patch:
+      operationId: repositorios_minios_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio mini os.
+        required: true
+      tags:
+      - repositorios-minios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRepositorioMiniOSRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRepositorioMiniOSRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRepositorioMiniOSRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositorioMiniOS'
+          description: ''
+    delete:
+      operationId: repositorios_minios_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio mini os.
+        required: true
+      tags:
+      - repositorios-minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/repositorios/{id}/:
+    get:
+      operationId: repositorios_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio.
+        required: true
+      tags:
+      - repositorios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repositorio'
+          description: ''
+    put:
+      operationId: repositorios_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio.
+        required: true
+      tags:
+      - repositorios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepositorioRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RepositorioRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RepositorioRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repositorio'
+          description: ''
+    patch:
+      operationId: repositorios_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio.
+        required: true
+      tags:
+      - repositorios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRepositorioRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRepositorioRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRepositorioRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repositorio'
+          description: ''
+    delete:
+      operationId: repositorios_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this repositorio.
+        required: true
+      tags:
+      - repositorios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/servicos/:
+    get:
+      operationId: servicos_list
+      tags:
+      - servicos
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Servico'
+          description: ''
+    post:
+      operationId: servicos_create
+      tags:
+      - servicos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServicoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServicoRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+          description: ''
+  /api/servicos/{id}/:
+    get:
+      operationId: servicos_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this servico.
+        required: true
+      tags:
+      - servicos
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+          description: ''
+    put:
+      operationId: servicos_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this servico.
+        required: true
+      tags:
+      - servicos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServicoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServicoRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+          description: ''
+    patch:
+      operationId: servicos_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this servico.
+        required: true
+      tags:
+      - servicos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServicoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServicoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServicoRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servico'
+          description: ''
+    delete:
+      operationId: servicos_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this servico.
+        required: true
+      tags:
+      - servicos
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/tarefas/:
+    get:
+      operationId: tarefas_list
+      tags:
+      - tarefas
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tarefa'
+          description: ''
+    post:
+      operationId: tarefas_create
+      tags:
+      - tarefas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TarefaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TarefaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TarefaRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+          description: ''
+  /api/tarefas-minios/:
+    get:
+      operationId: tarefas_minios_retrieve
+      tags:
+      - tarefas-minios
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/tarefas/{id}/:
+    get:
+      operationId: tarefas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tarefa.
+        required: true
+      tags:
+      - tarefas
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+          description: ''
+    put:
+      operationId: tarefas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tarefa.
+        required: true
+      tags:
+      - tarefas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TarefaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TarefaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TarefaRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+          description: ''
+    patch:
+      operationId: tarefas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tarefa.
+        required: true
+      tags:
+      - tarefas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTarefaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTarefaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTarefaRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarefa'
+          description: ''
+    delete:
+      operationId: tarefas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tarefa.
+        required: true
+      tags:
+      - tarefas
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/token/:
+    post:
+      operationId: token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomTokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          description: No response body
+  /api/token/refresh/:
+    post:
+      operationId: token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 100
+        tipo_inscricao:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoInscricaoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        numero_inscricao:
+          type: string
+          nullable: true
+          maxLength: 30
+        tipo_cliente:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoClienteEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        observacao:
+          type: string
+          nullable: true
+        data_criacao:
+          type: string
+          format: date-time
+          readOnly: true
+        nome_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        setor_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        email_representante:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        contato_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        cliente_ativo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ClienteAtivoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        renovacao_automatica:
+          type: boolean
+        cobranca_revisao_alteracao:
+          type: boolean
+      required:
+      - data_criacao
+      - id
+      - nome
+    ClienteAtivoEnum:
+      enum:
+      - sim
+      - nao
+      type: string
+      description: |-
+        * `sim` - SIM
+        * `nao` - NÃO
+    ClienteRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 100
+        tipo_inscricao:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoInscricaoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        numero_inscricao:
+          type: string
+          nullable: true
+          maxLength: 30
+        tipo_cliente:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoClienteEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        observacao:
+          type: string
+          nullable: true
+        nome_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        setor_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        email_representante:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        contato_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        cliente_ativo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ClienteAtivoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        renovacao_automatica:
+          type: boolean
+        cobranca_revisao_alteracao:
+          type: boolean
+      required:
+      - nome
+    ConcluidaEnum:
+      enum:
+      - sim
+      - nao
+      type: string
+      description: |-
+        * `sim` - Sim
+        * `nao` - Não
+    CustomTokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    FaturamentoD84Enum:
+      enum:
+      - sim
+      - nao
+      type: string
+      description: |-
+        * `sim` - SIM
+        * `nao` - NÃO
+    FormaPagamentoEnum:
+      enum:
+      - pix
+      - credito
+      - debto
+      - boleto
+      - transferencia
+      - dinheiro
+      - check
+      - outro
+      type: string
+      description: |-
+        * `pix` - PIX
+        * `credito` - Crédito
+        * `debto` - Débto
+        * `boleto` - Boleto
+        * `transferencia` - Transferência
+        * `dinheiro` - Dinheiro
+        * `check` - Check
+        * `outro` - Outro
+    MiniOS:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quantidade:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        descricao:
+          type: string
+          nullable: true
+        data_recebimento:
+          type: string
+          format: date
+          nullable: true
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/MiniOSStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        faturamento:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/FaturamentoD84Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        n_nf:
+          type: string
+          nullable: true
+          maxLength: 10
+        cliente:
+          type: integer
+        servico:
+          type: integer
+        profile:
+          type: integer
+      required:
+      - cliente
+      - id
+      - profile
+      - servico
+    MiniOSRequest:
+      type: object
+      properties:
+        quantidade:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        descricao:
+          type: string
+          nullable: true
+        data_recebimento:
+          type: string
+          format: date
+          nullable: true
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/MiniOSStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        faturamento:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/FaturamentoD84Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        n_nf:
+          type: string
+          nullable: true
+          maxLength: 10
+        cliente:
+          type: integer
+        servico:
+          type: integer
+        profile:
+          type: integer
+      required:
+      - cliente
+      - profile
+      - servico
+    MiniOSStatusEnum:
+      enum:
+      - nao_iniciado
+      - em_andamento
+      - finalizada
+      type: string
+      description: |-
+        * `nao_iniciado` - NÃO INICIADO
+        * `em_andamento` - EM ANDAMENTO
+        * `finalizada` - FINALIZADA
+    NullEnum:
+      enum:
+      - null
+    OrdemServico:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        servicos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicoEmbedded'
+        usuario_criador:
+          type: string
+          nullable: true
+          maxLength: 50
+        data_criacao:
+          type: string
+          format: date
+        valor:
+          type: number
+          format: double
+          nullable: true
+        forma_pagamento:
+          $ref: '#/components/schemas/FormaPagamentoEnum'
+        quantidade_parcelas:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/QuantidadeParcelasEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        cobranca_imediata:
+          $ref: '#/components/schemas/ConcluidaEnum'
+        faturamento_1:
+          type: string
+          format: date
+          nullable: true
+        nome_contato_envio_nf:
+          type: string
+          maxLength: 50
+        contato_envio_nf:
+          type: string
+          format: email
+          maxLength: 254
+        observacao:
+          type: string
+          nullable: true
+        concluida:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ConcluidaEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        faturamento:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ConcluidaEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        numero_nf:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        data_faturamento:
+          type: string
+          format: date
+          nullable: true
+        cliente:
+          type: integer
+      required:
+      - cliente
+      - data_criacao
+      - id
+      - servicos
+    OrdemServicoRequest:
+      type: object
+      properties:
+        servicos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicoEmbeddedRequest'
+        usuario_criador:
+          type: string
+          nullable: true
+          maxLength: 50
+        data_criacao:
+          type: string
+          format: date
+        valor:
+          type: number
+          format: double
+          nullable: true
+        forma_pagamento:
+          $ref: '#/components/schemas/FormaPagamentoEnum'
+        quantidade_parcelas:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/QuantidadeParcelasEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        cobranca_imediata:
+          $ref: '#/components/schemas/ConcluidaEnum'
+        faturamento_1:
+          type: string
+          format: date
+          nullable: true
+        nome_contato_envio_nf:
+          type: string
+          minLength: 1
+          maxLength: 50
+        contato_envio_nf:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        observacao:
+          type: string
+          nullable: true
+        concluida:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ConcluidaEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        faturamento:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ConcluidaEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        numero_nf:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        data_faturamento:
+          type: string
+          format: date
+          nullable: true
+        cliente:
+          type: integer
+      required:
+      - cliente
+      - data_criacao
+      - servicos
+    PatchedClienteRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 100
+        tipo_inscricao:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoInscricaoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        numero_inscricao:
+          type: string
+          nullable: true
+          maxLength: 30
+        tipo_cliente:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/TipoClienteEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        observacao:
+          type: string
+          nullable: true
+        nome_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        setor_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        email_representante:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        contato_representante:
+          type: string
+          nullable: true
+          maxLength: 50
+        cliente_ativo:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ClienteAtivoEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        renovacao_automatica:
+          type: boolean
+        cobranca_revisao_alteracao:
+          type: boolean
+    PatchedMiniOSRequest:
+      type: object
+      properties:
+        quantidade:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        descricao:
+          type: string
+          nullable: true
+        data_recebimento:
+          type: string
+          format: date
+          nullable: true
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/MiniOSStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        faturamento:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/FaturamentoD84Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        n_nf:
+          type: string
+          nullable: true
+          maxLength: 10
+        cliente:
+          type: integer
+        servico:
+          type: integer
+        profile:
+          type: integer
+    PatchedOrdemServicoRequest:
+      type: object
+      properties:
+        servicos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServicoEmbeddedRequest'
+        usuario_criador:
+          type: string
+          nullable: true
+          maxLength: 50
+        data_criacao:
+          type: string
+          format: date
+        valor:
+          type: number
+          format: double
+          nullable: true
+        forma_pagamento:
+          $ref: '#/components/schemas/FormaPagamentoEnum'
+        quantidade_parcelas:
+          nullable: true
+          minimum: -2147483648
+          maximum: 2147483647
+          oneOf:
+          - $ref: '#/components/schemas/QuantidadeParcelasEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        cobranca_imediata:
+          $ref: '#/components/schemas/ConcluidaEnum'
+        faturamento_1:
+          type: string
+          format: date
+          nullable: true
+        nome_contato_envio_nf:
+          type: string
+          minLength: 1
+          maxLength: 50
+        contato_envio_nf:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        observacao:
+          type: string
+          nullable: true
+        concluida:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ConcluidaEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        faturamento:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ConcluidaEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        numero_nf:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        data_faturamento:
+          type: string
+          format: date
+          nullable: true
+        cliente:
+          type: integer
+    PatchedProfileRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        cpf:
+          type: string
+          minLength: 1
+          maxLength: 14
+        token:
+          type: string
+          nullable: true
+          maxLength: 255
+        profile_picture:
+          type: string
+          format: binary
+          nullable: true
+    PatchedRepositorioMiniOSRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 50
+        descricao:
+          type: string
+          nullable: true
+    PatchedRepositorioRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 100
+        descricao:
+          type: string
+          nullable: true
+    PatchedServicoRequest:
+      type: object
+      properties:
+        repositorio_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        descricao:
+          type: string
+          minLength: 1
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status942Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        data_conclusao:
+          type: string
+          format: date
+          nullable: true
+        ordem_servico:
+          type: integer
+          nullable: true
+    PatchedTarefaRequest:
+      type: object
+      properties:
+        profile_id:
+          type: integer
+          writeOnly: true
+        servico_id:
+          type: integer
+          writeOnly: true
+        descricao:
+          type: string
+          nullable: true
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        ordem_servico:
+          type: integer
+          nullable: true
+        servico:
+          type: integer
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        cpf:
+          type: string
+          maxLength: 14
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        token:
+          type: string
+          nullable: true
+          maxLength: 255
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - cpf
+      - created
+      - id
+      - user
+    ProfileInServico:
+      type: object
+      properties:
+        user_name:
+          type: string
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+      required:
+      - user_name
+    ProfileInServicoRequest:
+      type: object
+      properties:
+        user_name:
+          type: string
+          minLength: 1
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+      required:
+      - user_name
+    ProfileOrdemServico:
+      type: object
+      properties:
+        user_name:
+          type: string
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+      required:
+      - user_name
+    ProfileOrdemServicoRequest:
+      type: object
+      properties:
+        user_name:
+          type: string
+          minLength: 1
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+      required:
+      - user_name
+    ProfileRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          writeOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          minimum: -2147483648
+          maximum: 2147483647
+        cpf:
+          type: string
+          minLength: 1
+          maxLength: 14
+        token:
+          type: string
+          nullable: true
+          maxLength: 255
+        profile_picture:
+          type: string
+          format: binary
+          nullable: true
+      required:
+      - cpf
+      - user_id
+    QuantidadeParcelasEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      type: integer
+      description: |-
+        * `1` - 1 parcela
+        * `2` - 2 parcelas
+        * `3` - 3 parcelas
+        * `4` - 4 parcelas
+        * `5` - 5 parcelas
+        * `6` - 6 parcelas
+        * `7` - 7 parcelas
+        * `8` - 8 parcelas
+        * `9` - 9 parcelas
+        * `10` - 10 parcelas
+        * `11` - 11 parcelas
+        * `12` - 12 parcelas
+    Repositorio:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 100
+        descricao:
+          type: string
+          nullable: true
+      required:
+      - id
+      - nome
+    RepositorioEmbedded:
+      type: object
+      properties:
+        nome:
+          type: string
+          maxLength: 100
+      required:
+      - nome
+    RepositorioEmbeddedRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 100
+      required:
+      - nome
+    RepositorioMiniOS:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        nome:
+          type: string
+          maxLength: 50
+        descricao:
+          type: string
+          nullable: true
+      required:
+      - id
+      - nome
+    RepositorioMiniOSRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 50
+        descricao:
+          type: string
+          nullable: true
+      required:
+      - nome
+    RepositorioRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+          minLength: 1
+          maxLength: 100
+        descricao:
+          type: string
+          nullable: true
+      required:
+      - nome
+    RoleEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      type: integer
+      description: |-
+        * `1` - Diretor
+        * `2` - Administrativo
+        * `3` - Líder Técnico
+        * `4` - Sub-Líder Técnico
+        * `5` - Técnico
+    Servico:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        repositorio:
+          allOf:
+          - $ref: '#/components/schemas/Repositorio'
+          readOnly: true
+        descricao:
+          type: string
+        tarefas:
+          type: array
+          items:
+            $ref: '#/components/schemas/TarefaInServico'
+          readOnly: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status942Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        data_conclusao:
+          type: string
+          format: date
+          nullable: true
+        ordem_servico:
+          type: integer
+          nullable: true
+      required:
+      - descricao
+      - id
+      - repositorio
+      - tarefas
+    ServicoEmbedded:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        repositorio:
+          allOf:
+          - $ref: '#/components/schemas/RepositorioEmbedded'
+          readOnly: true
+        descricao:
+          type: string
+        tarefas:
+          type: array
+          items:
+            $ref: '#/components/schemas/TarefaEmbedded'
+          readOnly: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status942Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        data_conclusao:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - descricao
+      - id
+      - repositorio
+      - tarefas
+    ServicoEmbeddedRequest:
+      type: object
+      properties:
+        repositorio_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        descricao:
+          type: string
+          minLength: 1
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status942Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        data_conclusao:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - descricao
+    ServicoRequest:
+      type: object
+      properties:
+        repositorio_id:
+          type: integer
+          writeOnly: true
+          nullable: true
+        descricao:
+          type: string
+          minLength: 1
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status942Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        data_conclusao:
+          type: string
+          format: date
+          nullable: true
+        ordem_servico:
+          type: integer
+          nullable: true
+      required:
+      - descricao
+    Status461Enum:
+      enum:
+      - nao_iniciada
+      - em_andamento
+      - concluida
+      type: string
+      description: |-
+        * `nao_iniciada` - NÃO INICIADA
+        * `em_andamento` - EM ANDAMENTO
+        * `concluida` - CONCLUÍDA
+    Status942Enum:
+      enum:
+      - em_espera
+      - em_andamento
+      - concluida
+      type: string
+      description: |-
+        * `em_espera` - EM ESPERA
+        * `em_andamento` - EM ANDAMENTO
+        * `concluida` - CONCLUÍDA
+    Tarefa:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        profile:
+          allOf:
+          - $ref: '#/components/schemas/Profile'
+          readOnly: true
+        descricao:
+          type: string
+          nullable: true
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        ordem_servico:
+          type: integer
+          nullable: true
+        servico:
+          type: integer
+      required:
+      - id
+      - profile
+      - updated_at
+    TarefaEmbedded:
+      type: object
+      properties:
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        profile:
+          $ref: '#/components/schemas/ProfileOrdemServico'
+      required:
+      - profile
+    TarefaEmbeddedRequest:
+      type: object
+      properties:
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        profile:
+          $ref: '#/components/schemas/ProfileOrdemServicoRequest'
+      required:
+      - profile
+    TarefaInServico:
+      type: object
+      properties:
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        profile:
+          $ref: '#/components/schemas/ProfileInServico'
+      required:
+      - profile
+    TarefaInServicoRequest:
+      type: object
+      properties:
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        profile:
+          $ref: '#/components/schemas/ProfileInServicoRequest'
+      required:
+      - profile
+    TarefaRequest:
+      type: object
+      properties:
+        profile_id:
+          type: integer
+          writeOnly: true
+        servico_id:
+          type: integer
+          writeOnly: true
+        descricao:
+          type: string
+          nullable: true
+        data_inicio:
+          type: string
+          format: date
+          nullable: true
+        data_termino:
+          type: string
+          format: date
+          nullable: true
+        status:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Status461Enum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        ordem_servico:
+          type: integer
+          nullable: true
+        servico:
+          type: integer
+      required:
+      - profile_id
+      - servico_id
+    TipoClienteEnum:
+      enum:
+      - gestao
+      - avulso
+      - fornecedor
+      type: string
+      description: |-
+        * `gestao` - Gestão
+        * `avulso` - Avulso
+        * `fornecedor` - Fornecedor
+    TipoInscricaoEnum:
+      enum:
+      - cnpj
+      - cpf
+      - cei
+      - cno
+      - caepf
+      type: string
+      description: |-
+        * `cnpj` - CNPJ
+        * `cpf` - CPF
+        * `cei` - CEI
+        * `cno` - CNO
+        * `caepf` - CAEPF
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          title: Usuário
+          description: Obrigatório. 150 caracteres ou menos. Letras, números e @/./+/-/_
+            apenas.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Endereço de email
+          maxLength: 254
+        first_name:
+          type: string
+          title: Primeiro nome
+          maxLength: 150
+        last_name:
+          type: string
+          title: Último nome
+          maxLength: 150
+      required:
+      - id
+      - username
+    UserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          title: Usuário
+          description: Obrigatório. 150 caracteres ou menos. Letras, números e @/./+/-/_
+            apenas.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Endereço de email
+          maxLength: 254
+        first_name:
+          type: string
+          title: Primeiro nome
+          maxLength: 150
+        last_name:
+          type: string
+          title: Último nome
+          maxLength: 150
+      required:
+      - username
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

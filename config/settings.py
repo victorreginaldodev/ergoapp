@@ -16,7 +16,7 @@ ALLOWED_HOSTS = [ 'www.ergogroupapp.com']
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
-    "https://app.ergogroupapp.com/"
+    "https://app.ergogroupapp.com"
 ]
 
 INSTALLED_APPS = [
